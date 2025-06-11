@@ -81,6 +81,16 @@
                                                 <th>Peran</th>
                                                 <td>{{ $user->role->role_name ?? '-' }}</td>
                                             </tr>
+                                            <tr>
+                                                <th>Jenis Member</th>
+                                                <td>
+                                                    @if ($user->is_member)
+                                                        <span class="badge badge-success">Premium</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">Free</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
                                         </table>
                                     </div>
                                 </div>

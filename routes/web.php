@@ -15,6 +15,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\IngredientsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\DashboardUserController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SponsorController;
 
 Route::get('/', function () {
@@ -71,6 +72,10 @@ Route::name('users')->middleware('users')->group(function () {
     Route::get('/menu/{id}/detail', [MenuController::class, 'detail'])->name('menu.detail');
     Route::get('/kategori-list', [DashboardUserController::class, 'kategoriList'])->name('user.kategori-list');
     Route::get('/kategori/{id}', [DashboardUserController::class, 'menuByKategori'])->name('user.menu-by-kategori');
+});
+
+Route::middleware(['auth', 'check.membership'])->group(function () {
+    Route::get('/member/dashboard', [MemberController::class, 'index'])->name('member.dashboard');
 });
 
 Route::get('/test-translate', function () {

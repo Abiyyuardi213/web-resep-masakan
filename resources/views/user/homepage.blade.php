@@ -17,11 +17,6 @@
             padding: 0;
         }
 
-        .navbar-brand {
-            font-family: 'Pacifico', cursive;
-            font-size: 1.8rem;
-        }
-
         .carousel-caption h1 {
             font-family: 'Pacifico', cursive;
             font-size: 3rem;
@@ -34,25 +29,6 @@
         .hover-shadow:hover {
             transform: translateY(-5px);
             box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-        }
-
-        .floating-navbar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 0.5rem 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            z-index: 1050;
-            width: auto;
-            max-width: 90%;
-        }
-
-        .navbar {
-            background: #ffffff;
-            border: none !important;
         }
 
         .vh-100 {

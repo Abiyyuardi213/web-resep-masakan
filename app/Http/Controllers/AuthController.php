@@ -38,6 +38,13 @@ class AuthController extends Controller
         Auth::guard('users')->login($user);
         $request->session()->regenerate();
 
+        logger('User login:', [
+            'user_id' => $user->id,
+            'guard' => 'users',
+            'session' => session()->all(),
+            'auth_user' => Auth::guard('users')->user(),
+        ]);
+
         return redirect()->intended('/homepage');
     }
 
@@ -100,7 +107,7 @@ class AuthController extends Controller
         dd($googleUser);
 
         if (User::where('email', $googleUser->getEmail())->first()) {
-            
+
         }
 
         Log::info('Google User', (array) $googleUser);

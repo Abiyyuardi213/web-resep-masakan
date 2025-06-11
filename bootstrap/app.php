@@ -6,6 +6,7 @@ use App\Http\Middleware\RedirectIfNotUser;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\CheckMembership;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,14 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // $middleware->append([
-        //     \Illuminate\Session\Middleware\StartSession::class,
-        //     \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        // ]);
-
         $middleware->alias([
             'admin' => RedirectIfNotAdmin::class,
             'users' => RedirectIfNotUser::class,
+            'check.membership' => CheckMembership::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

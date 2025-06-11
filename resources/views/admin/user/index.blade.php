@@ -45,6 +45,7 @@
                                             <th>Email</th>
                                             <th>Nomor Telepon</th>
                                             <th>Peran</th>
+                                            <th>Jenis Member</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -69,6 +70,14 @@
                                                         <span class="badge {{ $badgeClass }}">{{ ucfirst($user->role->role_name) }}</span>
                                                     @else
                                                         <span class="badge badge-secondary">-</span>
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    @if ($user->is_member)
+                                                        <span class="badge badge-success">Premium</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">Free</span>
                                                     @endif
                                                 </td>
 
