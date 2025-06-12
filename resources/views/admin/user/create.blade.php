@@ -85,6 +85,18 @@
                                             </select>
                                             @error('role_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="is_member">Jenis Member</label>
+                                            <select class="form-control @error('is_member') is-invalid @enderror"
+                                                    name="is_member">
+                                                <option value="1" {{ old('is_member') == '1' ? 'selected' : '' }}>Member Premium</option>
+                                                <option value="0" {{ old('is_member') == '0' ? 'selected' : '' }}>Member Free</option>
+                                            </select>
+                                            @error('is_member')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
 
                                     <!-- Kanan: Foto -->

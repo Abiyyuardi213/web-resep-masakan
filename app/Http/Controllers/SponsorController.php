@@ -39,7 +39,7 @@ class SponsorController extends Controller
         $sponsor->id = (string) \Illuminate\Support\Str::uuid();
         $sponsor->save();
 
-        return redirect()->route('sponsor.index')->with('success', 'Sponsor berhasil ditambahkan!');
+        return redirect()->route('admin.sponsor.index')->with('success', 'Sponsor berhasil ditambahkan!');
     }
 
 

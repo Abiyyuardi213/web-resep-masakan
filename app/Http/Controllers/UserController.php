@@ -32,6 +32,7 @@ class UserController extends Controller
             'password' => 'required|string|min:6',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'role_id' => 'required|exists:role,id',
+            'is_member' => 'required|boolean',
         ]);
 
         $data = $request->all();
@@ -74,10 +75,11 @@ class UserController extends Controller
             'password' => 'nullable|string|min:6',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'role_id' => 'required|exists:role,id',
+            'is_member' => 'required|boolean',
         ]);
 
         $data = $request->only([
-            'name', 'username', 'email', 'no_telepon', 'password', 'role_id'
+            'name', 'username', 'email', 'no_telepon', 'password', 'role_id', 'is_member'
         ]);
 
         if (!empty($data['password'])) {
@@ -107,7 +109,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->deletePengguna();
+        $user->deleteUser();
 
         return redirect()->route('admin.user.index')->with('success', 'User berhasil dihapus.');
     }

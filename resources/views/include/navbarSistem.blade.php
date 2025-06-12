@@ -1,3 +1,4 @@
+{{-- <pre>{{ dd(Auth::user()) }}</pre> --}}
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <ul class="navbar-nav">
         <li class="nav-item">
@@ -9,12 +10,12 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user-circle"></i> {{ session('username') }}
+                <i class="fas fa-user-circle"></i> {{ Auth::guard('admin')->user()->username ?? 'Admin' }}
             </a>
             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                 <li>
-                    <a class="dropdown-item" href="{{ url('dashboard') }}">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard test "ngecek push"
+                    <a class="dropdown-item" href="{{ url('dashboard-admin') }}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
                 <li>

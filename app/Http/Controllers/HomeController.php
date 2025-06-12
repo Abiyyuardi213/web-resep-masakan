@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Models\Sponsor;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -10,6 +11,8 @@ class HomeController extends Controller
     public function index()
     {
         $menus = Menu::with('kategori')->latest()->take(8)->get();
-        return view('home', compact('menus'));
+        $sponsors = Sponsor::latest()->get();
+
+        return view('home', compact('menus', 'sponsors'));
     }
 }

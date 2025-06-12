@@ -183,7 +183,7 @@
                                     data-title="{{ $menu->nama_menu }}"
                                     data-desc="{{ $menu->deskripsi_menu }}"
                                     data-image="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}">
-                                🍽 Lihat Detail Resep
+                                Lihat Detail Resep
                             </button>
                         </div>
                     </div>
@@ -195,6 +195,45 @@
                     </div>
                 </div>
             @endforelse
+        </div>
+    </section>
+
+    <!-- Sponsor Section -->
+    <section id="sponsor" class="container my-5">
+        <div class="text-center mb-4">
+            <h4 class="fw-bold">Sponsor Kami</h4>
+            <p class="text-muted">Terima kasih kepada sponsor yang mendukung Dapur Indonesia</p>
+        </div>
+
+        <div id="sponsorCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+
+                @foreach ($sponsors->chunk(6) as $index => $chunk)
+                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                        <div class="row justify-content-center g-4">
+                            @foreach ($chunk as $sponsor)
+                                <div class="col-4 col-sm-3 col-md-2">
+                                    <div class="text-center">
+                                        <img src="{{ asset('uploads/sponsor/' . $sponsor->logo_sponsor) }}"
+                                            class="img-fluid rounded shadow-sm"
+                                            style="height: 80px; object-fit: contain;"
+                                            alt="{{ $sponsor->nama_sponsor }}">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+
+            </div>
+            @if($sponsors->count() > 6)
+                <button class="carousel-control-prev" type="button" data-bs-target="#sponsorCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#sponsorCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            @endif
         </div>
     </section>
 
@@ -218,16 +257,28 @@
 
     <!-- Modal Detail -->
     <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detailModalLabel">Detail Resep</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
-                    <img id="detailImage" src="" alt="" class="img-fluid rounded mb-3" />
-                    <h4 id="detailTitle"></h4>
-                    <p id="detailDesc"></p>
+                    <div class="row g-4">
+                        <!-- Gambar -->
+                        <div class="col-md-5">
+                            <img id="detailImage" src="" alt="" class="img-fluid rounded shadow-sm w-100 h-100 object-fit-cover" />
+                        </div>
+
+                        <!-- Informasi Resep -->
+                        <div class="col-md-7">
+                            <h4 id="detailTitle" class="fw-bold text-dark"></h4>
+                            <p id="detailDesc" class="text-muted"></p>
+                            <hr>
+                            <h5 class="fw-semibold">Prosedur Memasak</h5>
+                            <p id="detailProsedur" class="text-secondary" style="white-space: pre-line;"></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

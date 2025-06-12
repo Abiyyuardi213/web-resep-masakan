@@ -32,7 +32,9 @@
                                         style="width: 40px; height: 40px; object-fit: cover;">
                                     <div>
                                         <strong>{{ Auth::user()->username }}</strong><br>
-                                        <small class="text-muted">{{ Auth::user()->is_member ? 'Member Premium' : 'Member Biasa' }}</small>
+                                        <span class="badge {{ Auth::user()->is_member ? 'bg-warning text-dark' : 'bg-success' }}">
+                                            {{ Auth::user()->is_member ? 'Premium' : 'Free' }}
+                                        </span>
                                     </div>
                                 </div>
                             </li>

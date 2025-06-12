@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'profile_picture',
         'role_id',
+        'is_member',
     ];
 
     protected $hidden = [
@@ -58,5 +59,10 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return strtolower($this->role->role_name) === 'admin';
+    }
+
+    public function deleteUser()
+    {
+        return $this->delete();
     }
 }

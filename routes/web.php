@@ -40,7 +40,7 @@ Route::post('/login-admin', [AuthController::class, 'adminLogin'])->name('login-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::resource('menu', MenuController::class);
-Route::resource('sponsor', SponsorController::class);
+// Route::resource('sponsor', SponsorController::class);
 
 Route::name('admin.')->middleware('admin')->group(function () {
     Route::get('/dashboard-admin', [DashboardController::class, 'index'])->name('dashboard.admin');
@@ -63,6 +63,7 @@ Route::name('admin.')->middleware('admin')->group(function () {
     Route::delete('/ingredients/{id}', [IngredientsController::class, 'destroy']);
 
     Route::resource('tags', TagsController::class);
+    Route::resource('sponsor', SponsorController::class);
 });
 
 Route::name('users')->middleware('users')->group(function () {

@@ -79,6 +79,13 @@
                     </ul>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('admin.sponsor.index') }}" class="nav-link {{ request()->is('sponsor') ? 'active-custom' : '' }}">
+                        <i class="nav-icon fas fa-handshake"></i>
+                        <p>Sponsor</p>
+                    </a>
+                </li>
+
                 <!-- Pengaturan -->
                 <li class="nav-item">
                     <a href="{{ url('pengaturan') }}" class="nav-link {{ request()->is('pengaturan') ? 'active-custom' : '' }}">

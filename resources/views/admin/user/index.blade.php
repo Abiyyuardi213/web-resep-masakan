@@ -75,9 +75,9 @@
 
                                                 <td>
                                                     @if ($user->is_member)
-                                                        <span class="badge badge-success">Premium</span>
+                                                        <span class="badge badge-warning">Premium</span>
                                                     @else
-                                                        <span class="badge badge-secondary">Free</span>
+                                                        <span class="badge badge-success">Free</span>
                                                     @endif
                                                 </td>
 
