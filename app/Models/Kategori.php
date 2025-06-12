@@ -14,6 +14,7 @@ class Kategori extends Model
     protected $fillable = [
         'id',
         'nama_kategori',
+        'gambar_kategori',
     ];
 
     protected static function booted()
@@ -29,6 +30,7 @@ class Kategori extends Model
     {
         return self::create([
             'nama_kategori' => $data['nama_kategori'],
+            'gambar_kategori' => $data['gambar_kategori'],
         ]);
     }
 
@@ -36,6 +38,7 @@ class Kategori extends Model
     {
         $this->update([
             'nama_kategori' => $data['nama_kategori'],
+            'gambar_kategori' => $data['gambar_kategori'],
         ]);
     }
 

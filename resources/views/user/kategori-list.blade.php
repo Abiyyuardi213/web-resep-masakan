@@ -122,10 +122,12 @@
         <div class="row g-4">
             @foreach ($kategoris as $item)
             <div class="col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100 custom-card text-center p-3">
-                    <div class="card-body d-flex flex-column justify-content-center">
+                <div class="card shadow-sm h-100">
+                    <img src="{{ asset('uploads/kategori/' . $item->gambar_kategori) }}" class="card-img-top" alt="{{ $item->nama_kategori }}" style="height: 220px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ $item->nama_kategori }}</h5>
-                        <a href="{{ url('/kategori/{id}') }}" class="btn btn-outline-warning mt-3">Lihat Daftar Resep</a>
+                        <p class="card-text text-muted small">Kategori masakan khas Indonesia</p>
+                        <a href="{{ url('/kategori/' . $item->id) }}" class="btn btn-warning w-100 mt-auto">Lihat Daftar Resep</a>
                     </div>
                 </div>
             </div>

@@ -22,9 +22,22 @@ class KategoriController extends Controller
     {
         $request->validate([
             'nama_kategori' => 'required|string|max:255',
+            'gambar_kategori' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        Kategori::createKategori($request->only('nama_kategori'));
+        // Kategori::createKategori($request->only('nama_kategori'));
+        $data = $request->only(['nama_kategori']);
+
+        if ($request->hasFile('gambar_kategori')) {
+            $file = $request->file('gambar_kategori');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/kategori'), $filename);
+            $data['gambar_kategori'] = $filename;
+        }
+
+        $kategori = new Kategori($data);
+        $kategori->id = (string) \Illuminate\Support\Str::uuid();
+        $kategori->save();
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
@@ -36,16 +49,44 @@ class KategoriController extends Controller
         return view('admin.kategori.edit', compact('kategori'));
     }
 
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'nama_kategori' => 'required|string|max:255',
+    //         'gambar_kategori' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    //     ]);
+
+    //     $kategori = Kategori::findOrFail($id);
+    //     $kategori->updateKategori($request->only('nama_kategori'));
+
+    //     return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+    // }
+
     public function update(Request $request, $id)
     {
+        $kategori = Kategori::findOrFail($id);
+
         $request->validate([
             'nama_kategori' => 'required|string|max:255',
+            'gambar_kategori' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $kategori = Kategori::findOrFail($id);
-        $kategori->updateKategori($request->only('nama_kategori'));
+        $kategori->nama_kategori = $request->nama_kategori;
 
-        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+        if ($request->hasFile('gambar_kategori')) {
+            if ($kategori->gambar_kategori && file_exists(public_path('uploads/kategori/' . $kategori->gambar_kategori))) {
+                unlink(public_path('uploads/kategori/' . $kategori->gambar_kategori));
+            }
+
+            $file = $request->file('gambar_kategori');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/kategori'), $filename);
+            $kategori->gambar_kategori = $filename;
+        }
+
+        $kategori->save();
+
+        return redirect()->route('admin.kategori.index')->with('success', 'Sponsor berhasil diperbarui.');
     }
 
     public function destroy($id)

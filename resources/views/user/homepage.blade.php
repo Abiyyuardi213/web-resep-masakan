@@ -6,6 +6,7 @@
     <title>Dapur Indonesia</title>
     <link rel="icon" type="image/png" href="{{ asset('image/icondapur.jpg') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@300;600;800&display=swap" rel="stylesheet">
 
@@ -49,11 +50,30 @@
             transform: translateY(-5px);
             box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
         }
+
+        #toggleSidebar {
+            padding: 0.5rem 1rem;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1050;
+        }
+
+        #sidebar {
+            width: 300px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body>
 
     @include('include.navbarUser')
+
+    <!-- Tombol Toggle Sidebar -->
+    <button id="toggleSidebar" class="btn btn-outline-secondary shadow-sm">
+        <i class="fas fa-bars"></i> Menu
+    </button>
 
     <!-- Hero Carousel -->
     <section class="vh-100">
@@ -103,17 +123,65 @@
         </div>
     </div>
 
+    <!-- Sidebar Kanan -->
+    <div id="sidebar" class="position-fixed top-0 end-0 h-100 bg-white shadow-lg p-4 z-2 overflow-auto">
+        <button id="closeSidebar" class="btn btn-danger mb-3"><i class="fas fa-times"></i> Tutup</button>
+
+        {{-- Profil Pengguna --}}
+        <div class="d-flex align-items-center mb-4">
+            <img src="{{ Auth::user()->profile_picture ? asset('uploads/profile/' . Auth::user()->profile_picture) : asset('image/default-avatar.png') }}" alt="Profil" class="rounded-circle me-3" width="60" height="60">
+            <div>
+                <h6 class="mb-0">{{ Auth::user()->name ?? 'Nama Pengguna' }}</h6>
+                <small class="text-muted">{{ Auth::user()->is_member ? 'Premium' : 'Free' }}</small>
+            </div>
+        </div>
+
+        <hr>
+
+        {{-- Menu Navigasi --}}
+        <nav class="nav flex-column mb-4">
+            <a href="{{ url('/homepage') }}" class="nav-link text-dark"><i class="fas fa-home me-2"></i> Dashboard</a>
+            <a href="{{ url('/dashboard-user') }}" class="nav-link text-dark"><i class="fas fa-utensils me-2"></i> Menu</a>
+            <a href="{{ url('/kategori-list') }}" class="nav-link text-dark"><i class="fas fa-tags me-2"></i> Kategori</a>
+            <a href="#" class="nav-link text-dark"><i class="fas fa-book me-2"></i> Resep</a>
+            <a href="#" class="nav-link text-dark"><i class="fas fa-crown me-2"></i> Premium</a>
+            <a href="#" class="nav-link text-dark"><i class="fas fa-bookmark me-2"></i> Disimpan</a>
+        </nav>
+
+        <hr>
+
+        <h5 class="fw-bold">Tentang Dapur Indonesia</h5>
+        <p>Selamat datang di portal resep masakan khas Indonesia! Jelajahi ratusan resep dari seluruh nusantara.</p>
+
+        <hr>
+    </div>
+
     @include('include.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const detailModal = document.getElementById('detailModal');
-        detailModal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget;
-            document.getElementById('detailTitle').textContent = button.getAttribute('data-title');
-            document.getElementById('detailDesc').textContent = button.getAttribute('data-desc');
-            document.getElementById('detailImage').src = button.getAttribute('data-image');
-            document.getElementById('detailImage').alt = button.getAttribute('data-title');
+        if (detailModal) {
+            detailModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                document.getElementById('detailTitle').textContent = button.getAttribute('data-title');
+                document.getElementById('detailDesc').textContent = button.getAttribute('data-desc');
+                document.getElementById('detailImage').src = button.getAttribute('data-image');
+                document.getElementById('detailImage').alt = button.getAttribute('data-title');
+            });
+        }
+
+        // Toggle sidebar
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const closeSidebar = document.getElementById('closeSidebar');
+
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.style.transform = 'translateX(0)';
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            sidebar.style.transform = 'translateX(100%)';
         });
     </script>
 </body>
