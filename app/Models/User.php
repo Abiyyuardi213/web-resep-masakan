@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         return $this->delete();
     }
+
+    public function likes()
+    {
+        return $this->hasMany(\App\Models\Likes::class);
+    }
 }

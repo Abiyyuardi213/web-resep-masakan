@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\Kategori;
+use App\Models\Likes;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,16 +14,22 @@ class DashboardUserController extends Controller
     public function index()
     {
         $menus = Menu::with(['comments.user', 'likes'])->get();
-        $data = $menus->map(function ($menu) {
+
+        $likedMenuIds = Auth::check()
+            ? Likes::where('user_id', Auth::id())->pluck('menu_id')->toArray()
+            : [];
+
+        $data = $menus->map(function ($menu) use ($likedMenuIds) {
             return [
                 'id' => $menu->id,
                 'title' => $menu->nama_menu,
                 'desc' => $menu->deskripsi_menu,
                 'image' => $menu->gambar_menu,
-                'likes' => $menu->likes->count(),
+                'likes_count' => $menu->likes->count(), // ✅ untuk <span class="like-count">
+                'is_liked' => in_array($menu->id, $likedMenuIds), // ✅ untuk ikon bintang
                 'comments' => $menu->comments->map(function ($comment) {
                     return [
-                        'user' => $comment->user->name,
+                        'user' => $comment->user->name ?? 'Anonim',
                         'text' => $comment->comment_text,
                     ];
                 })->toArray(),

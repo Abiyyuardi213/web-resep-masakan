@@ -83,6 +83,14 @@
             height: 100%;
             object-fit: cover;
         }
+        .bi-heart-fill.liked {
+            color: red;
+        }
+
+        .like-btn i {
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -130,14 +138,14 @@
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <span class="like-btn" role="button" title="Suka">
-                                    <i class="bi bi-star"></i>
+                                <span class="like-btn" data-id="{{ $menu['id'] }}" role="button" title="Suka">
+                                    <i class="bi {{ $menu['is_liked'] ? 'bi-heart-fill liked' : 'bi-heart' }}"></i>
                                 </span>
-                                <span class="ms-1 like-count">0</span>
+                                <span class="ms-1 like-count">{{ $menu['likes_count'] }}</span>
                             </div>
                             <div>
                                 <button class="btn btn-sm btn-outline-primary comment-btn" data-bs-toggle="collapse" data-bs-target="#comments-{{ $menu['id'] }}">
-                                    <i class="bi bi-chat-left-text"></i> (0)
+                                    <i class="bi bi-chat-left-text"></i> ({{ count($menu['comments'] ?? []) }})
                                 </button>
                             </div>
                         </div>
@@ -153,13 +161,11 @@
 
                         <div class="collapse mt-3" id="comments-{{ $menu['id'] }}">
                             <div class="comments-section">
-                                @if (!empty($menu['comments']))
-                                    @foreach ($menu['comments'] as $comment)
-                                        <div><strong>{{ $comment['user'] }}:</strong> {{ $comment['text'] }}</div>
-                                    @endforeach
-                                @else
+                                @forelse ($menu['comments'] as $comment)
+                                    <div><strong>{{ $comment['user'] }}:</strong> {{ $comment['text'] }}</div>
+                                @empty
                                     <small class="text-muted">Belum ada komentar.</small>
-                                @endif
+                                @endforelse
                             </div>
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-sm comment-input" placeholder="Tulis komentar..." />
@@ -217,40 +223,118 @@
         });
 
         document.querySelectorAll('.like-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            btn.classList.toggle('liked');
-            const icon = btn.querySelector('i');
-            const countSpan = btn.nextElementSibling;
-            let count = parseInt(countSpan.textContent);
-            if (btn.classList.contains('liked')) {
-                icon.classList.replace('bi-star', 'bi-star-fill');
-                count++;
-            } else {
-                icon.classList.replace('bi-star-fill', 'bi-star');
-                count--;
-            }
-            countSpan.textContent = count;
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('liked');
+                const icon = btn.querySelector('i');
+                const countSpan = btn.nextElementSibling;
+                let count = parseInt(countSpan.textContent);
+                if (btn.classList.contains('liked')) {
+                    icon.classList.replace('bi-star', 'bi-star-fill');
+                    count++;
+                } else {
+                    icon.classList.replace('bi-star-fill', 'bi-star');
+                    count--;
+                }
+                countSpan.textContent = count;
+            });
         });
-    });
 
-    document.querySelectorAll('.btn-submit-comment').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const parent = btn.closest('.collapse');
-            const input = parent.querySelector('.comment-input');
-            const commentsSection = parent.querySelector('.comments-section');
-            const text = input.value.trim();
-            if (text === '') return alert('Komentar tidak boleh kosong!');
-            const newComment = document.createElement('div');
-            newComment.innerHTML = `<strong>Anda:</strong> ${text}`;
-            commentsSection.appendChild(newComment);
-            input.value = '';
+        document.querySelectorAll('.btn-submit-comment').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const parent = btn.closest('.collapse');
+                const input = parent.querySelector('.comment-input');
+                const commentsSection = parent.querySelector('.comments-section');
+                const text = input.value.trim();
+                if (text === '') return alert('Komentar tidak boleh kosong!');
+                const newComment = document.createElement('div');
+                newComment.innerHTML = `<strong>Anda:</strong> ${text}`;
+                commentsSection.appendChild(newComment);
+                input.value = '';
 
-            const commentBtn = parent.previousElementSibling.querySelector('.comment-btn');
-            const match = commentBtn.innerText.match(/\((\d+)\)/);
-            let current = match ? parseInt(match[1]) : 0;
-            commentBtn.innerHTML = `<i class="bi bi-chat-left-text"></i> (${current + 1})`;
+                const commentBtn = parent.previousElementSibling.querySelector('.comment-btn');
+                const match = commentBtn.innerText.match(/\((\d+)\)/);
+                let current = match ? parseInt(match[1]) : 0;
+                commentBtn.innerHTML = `<i class="bi bi-chat-left-text"></i> (${current + 1})`;
+            });
         });
-    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const csrfToken = '{{ csrf_token() }}';
+
+            // Like
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const menuId = btn.getAttribute('data-id');
+                    fetch(`/menu/${menuId}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        const icon = btn.querySelector('i');
+                        const countSpan = btn.nextElementSibling;
+                        let count = parseInt(countSpan.textContent);
+
+                        if (data.status === 'liked') {
+                            icon.classList.replace('bi-star', 'bi-star-fill');
+                            count++;
+                        } else {
+                            icon.classList.replace('bi-star-fill', 'bi-star');
+                            count--;
+                        }
+                        countSpan.textContent = count;
+                    });
+                });
+            });
+
+            // Comment
+            document.querySelectorAll('.btn-submit-comment').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const menuId = btn.getAttribute('data-id');
+                    const parent = btn.closest('.collapse');
+                    const input = parent.querySelector('.comment-input');
+                    const commentsSection = parent.querySelector('.comments-section');
+                    const text = input.value.trim();
+                    if (text === '') return alert('Komentar tidak boleh kosong!');
+
+                    fetch(`{{ route('menu.comment') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            menu_id: menuId,
+                            comment: text
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        const newComment = document.createElement('div');
+                        newComment.innerHTML = `<strong>Anda:</strong> ${text}`;
+                        commentsSection.appendChild(newComment);
+                        input.value = '';
+
+                        const commentBtn = parent.previousElementSibling.querySelector('.comment-btn');
+                        const match = commentBtn.innerText.match(/\((\d+)\)/);
+                        let current = match ? parseInt(match[1]) : 0;
+                        commentBtn.innerHTML = `<i class="bi bi-chat-left-text"></i> (${current + 1})`;
+                    });
+                });
+            });
+        });
+
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const icon = btn.querySelector('i');
+                icon.classList.toggle('bi-heart');
+                icon.classList.toggle('bi-heart-fill');
+                icon.classList.toggle('liked');
+            });
+        });
     </script>
 </body>
 </html>

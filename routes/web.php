@@ -16,6 +16,7 @@ use App\Http\Controllers\IngredientsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SponsorController;
 
 Route::get('/', function () {
@@ -52,8 +53,8 @@ Route::name('admin.')->middleware('admin')->group(function () {
 
     Route::resource('kategori', KategoriController::class);
 
-    Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');
-    Route::post('/comments', [CommentsController::class, 'store'])->name('comments.store');
+    //Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');
+    //Route::post('/comments', [CommentsController::class, 'store'])->name('comments.store');
     Route::put('/comments/{id}', [CommentsController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{id}', [CommentsController::class, 'destroy'])->name('comments.destroy');
 
@@ -73,10 +74,18 @@ Route::name('users')->middleware('users')->group(function () {
     Route::get('/menu/{id}/detail', [MenuController::class, 'detail'])->name('menu.detail');
     Route::get('/kategori-list', [DashboardUserController::class, 'kategoriList'])->name('user.kategori-list');
     Route::get('/kategori/{id}', [DashboardUserController::class, 'menuByKategori'])->name('user.menu-by-kategori');
+    Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
+    Route::post('/profil', [ProfilController::class, 'update'])->name('profil.update');
 });
 
 Route::middleware(['auth', 'check.membership'])->group(function () {
     Route::get('/member/dashboard', [MemberController::class, 'index'])->name('member.dashboard');
+});
+
+// Route untuk user login (semua role)
+Route::middleware('auth')->group(function () {
+    Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');
+    Route::post('/menu/comment', [CommentsController::class, 'store'])->name('menu.comment');
 });
 
 Route::get('/test-translate', function () {
