@@ -44,6 +44,15 @@
                                     <i class="bi bi-person-circle me-2"></i> Profil
                                 </a>
                             </li>
+
+                            @if (!Auth::user()->is_member)
+                                <li>
+                                    <a class="dropdown-item text-warning fw-semibold" href="{{ url('/upgrade') }}">
+                                        <i class="bi bi-stars me-2"></i> Upgrade ke Premium
+                                    </a>
+                                </li>
+                            @endif
+
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                     @csrf

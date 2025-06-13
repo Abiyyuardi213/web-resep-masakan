@@ -18,6 +18,7 @@ use App\Http\Controllers\DashboardUserController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SponsorController;
+use App\Http\Controllers\MembershipController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,7 +42,6 @@ Route::post('/login-admin', [AuthController::class, 'adminLogin'])->name('login-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::resource('menu', MenuController::class);
-// Route::resource('sponsor', SponsorController::class);
 
 Route::name('admin.')->middleware('admin')->group(function () {
     Route::get('/dashboard-admin', [DashboardController::class, 'index'])->name('dashboard.admin');
@@ -53,8 +53,6 @@ Route::name('admin.')->middleware('admin')->group(function () {
 
     Route::resource('kategori', KategoriController::class);
 
-    //Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');
-    //Route::post('/comments', [CommentsController::class, 'store'])->name('comments.store');
     Route::put('/comments/{id}', [CommentsController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{id}', [CommentsController::class, 'destroy'])->name('comments.destroy');
 
@@ -86,6 +84,10 @@ Route::middleware(['auth', 'check.membership'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');
     Route::post('/menu/comment', [CommentsController::class, 'store'])->name('menu.comment');
+    Route::get('/upgrade', [MembershipController::class, 'index'])->name('membership.index');
+    Route::post('/upgrade/process', [MembershipController::class, 'process'])->name('membership.process');
+    Route::post('/midtrans/callback', [MembershipController::class, 'callback'])->name('membership.callback');
+    Route::post('/upgrade/process', [MembershipController::class, 'process'])->name('membership.process');
 });
 
 Route::get('/test-translate', function () {

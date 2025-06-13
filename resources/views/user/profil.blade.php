@@ -14,7 +14,6 @@
         body {
             font-family: 'Source Sans Pro', sans-serif;
             margin: 0;
-            padding-top: 120px; /* ganti margin-top jadi padding-top */
         }
 
         .form-background {

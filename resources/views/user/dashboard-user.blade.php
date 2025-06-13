@@ -155,8 +155,9 @@
                             data-title="{{ $menu['title'] }}"
                             data-desc="{{ $menu['desc'] }}"
                             data-image="{{ asset('uploads/menu/' . $menu['image']) }}"
-                            data-detail-url="{{ route('usersmenu.detail', $menu['id']) }}">
-                            Lihat Detail Resep
+                            data-detail-url="{{ route('usersmenu.detail', $menu['id']) }}"
+                            data-comments='@json($menu['comments'])'> <!-- 👈 Ini ditambah -->
+                            Lihat Komentar Pengguna
                         </button>
 
                         <div class="collapse mt-3" id="comments-{{ $menu['id'] }}">
@@ -188,16 +189,35 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-4 align-items-start">
-                        <div class="col-md-6">
-                            <img id="detailImage" src="" alt="" class="img-fluid rounded shadow-sm w-100" style="max-height: 300px; object-fit: cover;">
+                    <div class="row g-0">
+                        <!-- Gambar di kiri -->
+                        <div class="col-md-6 border-end">
+                            <img id="detailImage" src="" alt="" class="img-fluid h-100 w-100 object-fit-cover" style="max-height: 100%; object-fit: cover;">
                         </div>
-                        <div class="col-md-6">
-                            <h4 id="detailTitle" class="fw-semibold mb-3"></h4>
-                            <p id="detailDesc" class="text-muted"></p>
-                            <a id="detailLink" href="#" class="btn btn-warning w-100 mt-3">
-                                <i class="bi bi-book-open"></i> Lihat Resep Lengkap
-                            </a>
+
+                        <!-- Detail & Komentar di kanan -->
+                        <div class="col-md-6 d-flex flex-column" style="max-height: 500px; overflow-y: auto;">
+                            <div class="p-3 flex-grow-1">
+                                <h5 id="detailTitle" class="fw-semibold mb-2"></h5>
+                                <p id="detailDesc" class="text-muted small"></p>
+
+                                <hr>
+
+                                <!-- Komentar-komentar -->
+                                <div id="detailComments" class="mb-3">
+                                    <small class="text-muted">Belum ada komentar.</small>
+                                </div>
+                            </div>
+
+                            <!-- Form komentar -->
+                            <div class="border-top p-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-control-sm" id="inputDetailComment" placeholder="Tulis komentar..." />
+                                    <button class="btn btn-sm btn-warning" id="btnSubmitDetailComment">
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,13 +233,64 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const detailModal = document.getElementById('detailModal');
+        const detailComments = document.getElementById('detailComments');
+        const btnSubmitDetailComment = document.getElementById('btnSubmitDetailComment');
+
         detailModal.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
+            const menuId = button.getAttribute('data-id');
+            const comments = JSON.parse(button.getAttribute('data-comments'));
+
             document.getElementById('detailTitle').textContent = button.getAttribute('data-title');
             document.getElementById('detailDesc').textContent = button.getAttribute('data-desc');
             document.getElementById('detailImage').src = button.getAttribute('data-image');
             document.getElementById('detailImage').alt = button.getAttribute('data-title');
-            document.getElementById('detailLink').href = button.getAttribute('data-detail-url');
+
+            detailComments.innerHTML = '';
+
+            if (comments.length > 0) {
+                comments.forEach(comment => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<strong>${comment.user}:</strong> ${comment.text}`;
+                    detailComments.appendChild(div);
+                });
+            } else {
+                detailComments.innerHTML = '<small class="text-muted">Belum ada komentar.</small>';
+            }
+
+            btnSubmitDetailComment.setAttribute('data-menuid', menuId);
+        });
+
+        document.getElementById('btnSubmitDetailComment').addEventListener('click', () => {
+            const input = document.getElementById('inputDetailComment');
+            const text = input.value.trim();
+            const menuId = document.getElementById('btnSubmitDetailComment').getAttribute('data-menuid');
+            const csrfToken = '{{ csrf_token() }}';
+
+            if (!text) return alert('Komentar tidak boleh kosong!');
+
+            fetch("{{ route('menu.comment') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    menu_id: menuId,
+                    comment: text
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const newComment = document.createElement('div');
+                newComment.innerHTML = `<strong>Anda:</strong> ${text}`;
+                detailComments.appendChild(newComment);
+                input.value = '';
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Gagal mengirim komentar.');
+            });
         });
 
         document.querySelectorAll('.like-btn').forEach(btn => {
@@ -261,7 +332,6 @@
         document.addEventListener("DOMContentLoaded", function () {
             const csrfToken = '{{ csrf_token() }}';
 
-            // Like
             document.querySelectorAll('.like-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const menuId = btn.getAttribute('data-id');
@@ -290,7 +360,6 @@
                 });
             });
 
-            // Comment
             document.querySelectorAll('.btn-submit-comment').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const menuId = btn.getAttribute('data-id');

@@ -11,17 +11,17 @@ class CommentsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'menu_id' => 'required|uuid|exists:menu,id',
+            'menu_id' => 'required|exists:menu,id',
             'comment' => 'required|string|max:1000',
         ]);
 
-        Comments::createComment([
+        Comments::create([
             'user_id' => Auth::id(),
             'menu_id' => $request->menu_id,
-            'comment' => $request->comment,
+            'comment_text' => $request->comment,
         ]);
 
-        return redirect()->back()->with('success', 'Komentar berhasil ditambahkan!');
+        return response()->json(['success' => true, 'message' => 'Komentar berhasil ditambahkan!']);
     }
 
     public function update(Request $request, $id)
@@ -40,7 +40,7 @@ class CommentsController extends Controller
             'comment' => $request->comment,
         ]);
 
-        return redirect()->back()->with('success', 'Komentar berhasil diperbarui.');
+        return redirect()->back()->with(    'success', 'Komentar berhasil diperbarui.');
     }
 
     public function destroy($id)
