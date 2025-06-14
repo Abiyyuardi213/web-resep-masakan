@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $menus = Menu::with('kategori')->latest()->take(8)->get();
+        $menus = Menu::with('kategori')->latest()->get();
         $sponsors = Sponsor::latest()->get();
         $galeris = Galeri::latest()->get();
 

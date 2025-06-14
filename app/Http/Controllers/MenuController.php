@@ -28,7 +28,7 @@ class MenuController extends Controller
             'kategori_id' => 'required|exists:kategori,id',
             'deskripsi_menu' => 'required|string',
             'prosedur' => 'required|string',
-            'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $data = $request->only(['nama_menu', 'deskripsi_menu', 'prosedur', 'kategori_id']);
@@ -64,7 +64,7 @@ class MenuController extends Controller
             'kategori_id' => 'required|exists:kategori,id',
             'deskripsi_menu' => 'required|string',
             'prosedur' => 'required|string',
-            'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $menu->nama_menu = $request->nama_menu;

@@ -63,7 +63,7 @@
                                             @error('logo_sponsor')<div class="text-danger">{{ $message }}</div>@enderror
                                         </div>
 
-                                        <div style="width: 300px; height: 300px; border: 2px dashed #ccc; margin: auto; display: flex; align-items: center; justify-content: center;">
+                                        <div style="width: 600px; height: 300px; border: 2px dashed #ccc; margin: auto; display: flex; align-items: center; justify-content: center;">
                                             <img id="preview" src="https://via.placeholder.com/300x300?text=Preview" class="img-fluid rounded" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                                         </div>
                                         <input type="hidden" name="cropped_image" id="cropped_image">
@@ -95,6 +95,7 @@
         let cropper;
         const image = document.getElementById('preview');
         const input = document.getElementById('gambar_menu');
+        const croppedInput = document.getElementById('cropped_image');
 
         input.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -106,15 +107,16 @@
 
                 if (cropper) cropper.destroy();
                 cropper = new Cropper(image, {
-                    aspectRatio: 1,
+                    aspectRatio: 2, // 600 / 300 = 2
                     viewMode: 1,
                     autoCropArea: 1,
-                    crop(event) {
-                        const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
-                        canvas.toBlob((blob) => {
-                            const formData = new FormData();
-                            formData.append('cropped_image', blob);
+                    cropend() {
+                        const canvas = cropper.getCroppedCanvas({
+                            width: 600,
+                            height: 300,
                         });
+
+                        croppedInput.value = canvas.toDataURL('image/jpeg');
                     }
                 });
             };

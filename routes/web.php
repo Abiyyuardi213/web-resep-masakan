@@ -28,6 +28,7 @@ Route::get('/', function () {
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri.index');
+Route::get('/galeri-list', [GaleriController::class, 'galeriList'])->name('galeri.list');
 Route::get('/contact', [ContactController::class, 'index']);
 
 Route::get('/login-user', [AuthController::class, 'showUserLoginForm'])->name('login-user');

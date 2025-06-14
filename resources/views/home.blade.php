@@ -133,36 +133,43 @@
             <h2 class="fw-bold display-5">Menu Pilihan</h2>
             <p class="text-muted">Jelajahi resep khas Indonesia favorit Anda</p>
         </div>
-        <div class="row g-4">
-            @forelse ($menus as $menu)
-            <div class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 border-0 shadow-sm hover-shadow">
-                        <img src="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}"
-                             class="card-img-top rounded-top"
-                             alt="{{ $menu->nama_menu }}"
-                             style="height: 230px; object-fit: cover;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-dark">{{ $menu->nama_menu }}</h5>
-                            <p class="card-text text-muted mb-4">{{ \Illuminate\Support\Str::limit($menu->deskripsi_menu, 80) }}</p>
-                            <button class="btn btn-warning mt-auto w-100 fw-semibold shadow-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#detailModal"
-                                    data-id="{{ $menu->id }}"
-                                    data-title="{{ $menu->nama_menu }}"
-                                    data-desc="{{ $menu->deskripsi_menu }}"
-                                    data-image="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}">
-                                Lihat Detail Resep
-                            </button>
-                        </div>
+
+        <div class="row g-4" id="menu-list">
+            @foreach ($menus->take(8) as $menu)
+            <div class="col-sm-6 col-md-4 col-lg-3 menu-item">
+                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                    <img src="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}"
+                        class="card-img-top rounded-top"
+                        alt="{{ $menu->nama_menu }}"
+                        style="height: 230px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold text-dark">{{ $menu->nama_menu }}</h5>
+                        <p class="card-text text-muted mb-4">{{ \Illuminate\Support\Str::limit($menu->deskripsi_menu, 80) }}</p>
+                        <button class="btn btn-warning mt-auto w-100 fw-semibold shadow-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#detailModal"
+                                data-id="{{ $menu->id }}"
+                                data-title="{{ $menu->nama_menu }}"
+                                data-desc="{{ $menu->deskripsi_menu }}"
+                                data-image="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}">
+                            Lihat Detail Resep
+                        </button>
                     </div>
                 </div>
-            @empty
-                <div class="col">
-                    <div class="alert alert-info text-center w-100">
-                        Belum ada menu yang tersedia.
-                    </div>
-                </div>
-            @endforelse
+            </div>
+            @endforeach
+        </div>
+
+        <div class="text-center mt-4">
+            @if ($menus->count() > 8)
+                <button id="loadMoreBtn" class="btn btn-outline-warning px-4 fw-semibold">Lihat Lebih Banyak</button>
+            @endif
+        </div>
+
+        <div class="text-center mt-3">
+            <button id="toggleMenuBtn" class="btn btn-outline-secondary px-4 fw-semibold d-none">
+                Lihat Lebih Sedikit
+            </button>
         </div>
     </section>
 
@@ -281,9 +288,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
     <script>
+        const allMenus = @json($menus);
+        const menuList = document.getElementById('menu-list');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+
+        let visibleCount = 8;
+
+        // MODAL DETAIL
         const detailModal = document.getElementById('detailModal');
-        detailModal.addEventListener('show.bs.modal', event => {
+        detailModal?.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
             document.getElementById('detailTitle').textContent = button.getAttribute('data-title');
             document.getElementById('detailDesc').textContent = button.getAttribute('data-desc');
@@ -291,11 +307,12 @@
             document.getElementById('detailImage').alt = button.getAttribute('data-title');
         });
 
+        // SWIPER GALERI LOOP
         const galeriSwiper = new Swiper('.galeriSwiper', {
             slidesPerView: 'auto',
             spaceBetween: 10,
             loop: true,
-            speed: 5000, // kecepatan animasi
+            speed: 5000,
             autoplay: {
                 delay: 0,
                 disableOnInteraction: false,
@@ -304,19 +321,59 @@
             freeModeMomentum: false,
             grabCursor: true,
             breakpoints: {
-                320: {
-                    slidesPerView: 1,
-                },
-                576: {
-                    slidesPerView: 2,
-                },
-                768: {
-                    slidesPerView: 3,
-                },
-                992: {
-                    slidesPerView: 4,
-                }
+                320: { slidesPerView: 1 },
+                576: { slidesPerView: 2 },
+                768: { slidesPerView: 3 },
+                992: { slidesPerView: 4 }
             }
+        });
+
+        // LOAD MORE MENU
+        loadMoreBtn?.addEventListener('click', function () {
+            const nextMenus = allMenus.slice(visibleCount, visibleCount + 4);
+
+            nextMenus.forEach(menu => {
+                const col = document.createElement('div');
+                col.className = 'col-sm-6 col-md-4 col-lg-3 menu-item extra-menu';
+                col.innerHTML = `
+                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                        <img src="${menu.gambar_menu ? '/uploads/menu/' + menu.gambar_menu : '/image/default.jpg'}"
+                            class="card-img-top rounded-top"
+                            alt="${menu.nama_menu}"
+                            style="height: 230px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark">${menu.nama_menu}</h5>
+                            <p class="card-text text-muted mb-4">${menu.deskripsi_menu.substring(0, 80)}...</p>
+                            <button class="btn btn-warning mt-auto w-100 fw-semibold shadow-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#detailModal"
+                                    data-id="${menu.id}"
+                                    data-title="${menu.nama_menu}"
+                                    data-desc="${menu.deskripsi_menu}"
+                                    data-image="${menu.gambar_menu ? '/uploads/menu/' + menu.gambar_menu : '/image/default.jpg'}">
+                                Lihat Detail Resep
+                            </button>
+                        </div>
+                    </div>
+                `;
+                menuList.appendChild(col);
+            });
+
+            visibleCount += 4;
+
+            if (visibleCount >= allMenus.length) {
+                loadMoreBtn.style.display = 'none';
+            }
+
+            toggleMenuBtn?.classList.remove('d-none');
+        });
+
+        // LIHAT LEBIH SEDIKIT
+        toggleMenuBtn?.addEventListener('click', function () {
+            document.querySelectorAll('.extra-menu').forEach(el => el.remove());
+            visibleCount = 8;
+            loadMoreBtn.style.display = 'inline-block';
+            toggleMenuBtn.classList.add('d-none');
         });
     </script>
 </body>

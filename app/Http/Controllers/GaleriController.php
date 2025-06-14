@@ -85,4 +85,10 @@ class GaleriController extends Controller
 
         return redirect()->route('admin.galeri.index')->with('success', 'Gambar berhasil dihapus.');
     }
+
+    public function galeriList()
+    {
+        $galeris = Galeri::latest()->get();
+        return view('galeri-list', compact('galeris'));
+    }
 }
