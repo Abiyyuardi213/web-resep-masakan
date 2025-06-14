@@ -21,6 +21,9 @@ use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\GaleriController;
 
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -67,11 +70,6 @@ Route::name('admin.')->middleware('admin')->group(function () {
     Route::resource('tags', TagsController::class);
     Route::resource('sponsor', SponsorController::class);
 
-    // Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri.index');
-    // Route::get('/galeri/create', [GaleriController::class, 'create'])->name('galeri.create');
-    // Route::post('/galeri', [GaleriController::class, 'store'])->name('galeri.store');
-    // Route::get('/galeri/show', [GaleriController::class, 'show'])->name('galeri.show');
-    // Route::delete('/galeri/{id}', [GaleriController::class, 'destroy'])->name('galeri.destroy');
     Route::resource('galeri', GaleriController::class);
 });
 
@@ -90,13 +88,19 @@ Route::middleware(['auth', 'check.membership'])->group(function () {
     Route::get('/member/dashboard', [MemberController::class, 'index'])->name('member.dashboard');
 });
 
-// Route untuk user login (semua role)
+Route::post('/midtrans/callback', [MembershipController::class, 'callback'])
+    ->withoutMiddleware([
+        VerifyCsrfToken::class,
+        SubstituteBindings::class
+    ])
+    ->name('membership.callback');
+
 Route::middleware('auth')->group(function () {
     Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');
     Route::post('/menu/comment', [CommentsController::class, 'store'])->name('menu.comment');
     Route::get('/upgrade', [MembershipController::class, 'index'])->name('membership.index');
     Route::post('/upgrade/process', [MembershipController::class, 'process'])->name('membership.process');
-    Route::post('/midtrans/callback', [MembershipController::class, 'callback'])->name('membership.callback');
+    //Route::post('/midtrans/callback', [MembershipController::class, 'callback'])->name('membership.callback');
     Route::post('/upgrade/process', [MembershipController::class, 'process'])->name('membership.process');
 });
 
