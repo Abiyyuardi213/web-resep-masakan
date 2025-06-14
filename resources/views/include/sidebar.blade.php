@@ -86,6 +86,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('admin.galeri.index') }}" class="nav-link {{ request()->is('galeri') ? 'active-custom' : '' }}">
+                        <i class="nav-icon fas fa-image"></i>
+                        <p>Galeri</p>
+                    </a>
+                </li>
+
                 <!-- Pengaturan -->
                 <li class="nav-item">
                     <a href="{{ url('pengaturan') }}" class="nav-link {{ request()->is('pengaturan') ? 'active-custom' : '' }}">

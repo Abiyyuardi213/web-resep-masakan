@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@300;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
 
     <style>
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             scroll-behavior: smooth;
             margin: 0;
             padding: 0;
@@ -97,64 +99,30 @@
 <body>
 @include('include.navbar')
 
-    <!-- Hero Section dengan Grid Layout -->
-    <section class="container pt-5 mt-5 pb-5">
-        <div class="row g-4">
-            <!-- Kolom Kiri: Carousel dan Info Singkat -->
-            <div class="col-lg-8">
-                <!-- Carousel -->
-                <div class="carousel-wrapper mb-3">
-                    <div id="carouselExample" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
-                        <div class="carousel-inner h-100 rounded-4 overflow-hidden shadow">
-                            @foreach ([
-                                ['image' => 'slide1.jpg', 'title' => 'Selamat Datang di Dapur Indonesia', 'desc' => 'Temukan berbagai resep nusantara yang menggoda selera'],
-                                ['image' => 'slide2.jpg', 'title' => 'Resep Masakan Nusantara', 'desc' => 'Setiap masakan membawa cerita dan kenangan'],
-                                ['image' => 'slide3.jpg', 'title' => 'Inspirasi Dapur Anda', 'desc' => 'Resep inovatif untuk semua kesempatan'],
-                            ] as $index => $slide)
-                                <div class="carousel-item position-relative {{ $index === 0 ? 'active' : '' }}">
-                                    <img src="{{ asset('image/' . $slide['image']) }}"
-                                        class="d-block w-100 h-100"
-                                        alt="Slide {{ $index + 1 }}">
-                                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 px-3 py-2">
-                                        <h1 class="fw-bold">{{ $slide['title'] }}</h1>
-                                        <p>{{ $slide['desc'] }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
+    <!-- Hero Carousel -->
+    <section class="vh-100">
+        <div id="carouselExample" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+            <div class="carousel-inner h-100">
+                @foreach ([
+                    ['image' => 'slide1.jpg', 'title' => 'Selamat Datang di Dapur Indonesia', 'desc' => 'Temukan berbagai resep nusantara yang menggoda selera'],
+                    ['image' => 'slide2.jpg', 'title' => 'Resep Masakan Nusantara', 'desc' => 'Setiap masakan membawa cerita dan kenangan'],
+                    ['image' => 'slide3.jpg', 'title' => 'Inspirasi Dapur Anda', 'desc' => 'Resep inovatif untuk semua kesempatan'],
+                ] as $index => $slide)
+                    <div class="carousel-item h-100 position-relative {{ $index === 0 ? 'active' : '' }}">
+                        <img src="{{ asset('image/' . $slide['image']) }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h1>{{ $slide['title'] }}</h1>
+                            <p>{{ $slide['desc'] }}</p>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </button>
                     </div>
-                </div>
-
-                <!-- Informasi Singkat -->
-                <div class="bg-light rounded-4 shadow-sm p-4">
-                    <h4 class="fw-bold text-danger">Tentang Website Ini</h4>
-                    <p class="mb-0 text-muted">
-                        Dapur Indonesia adalah platform resep masakan nusantara yang menyajikan berbagai hidangan tradisional hingga modern.
-                        Temukan inspirasi masakan harian Anda dan bagikan resep favorit bersama komunitas pecinta kuliner!
-                    </p>
-                </div>
+                @endforeach
             </div>
-
-            <!-- Kolom Kanan: Membership Info -->
-            <div class="col-lg-4">
-                <div class="bg-warning-subtle rounded-4 shadow-sm p-4 h-100">
-                    <h4 class="fw-bold text-warning">👥 Membership</h4>
-                    <p class="text-muted">Bergabunglah menjadi anggota Dapur Indonesia dan nikmati:</p>
-                    <ul class="list-unstyled text-muted">
-                        <li>✔ Akses penuh ke ribuan resep</li>
-                        <li>✔ Simpan resep favorit Anda</li>
-                        <li>✔ Bagikan resep kreasi sendiri</li>
-                        <li>✔ Ikuti event dan kompetisi masak</li>
-                    </ul>
-                    <a href="{{ url('/register') }}" class="btn btn-warning w-100 fw-semibold mt-3">Daftar Sekarang</a>
-                </div>
-            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
         </div>
     </section>
 
@@ -195,6 +163,27 @@
                     </div>
                 </div>
             @endforelse
+        </div>
+    </section>
+
+    <!-- Galeri Recap -->
+    <section id="galeri" class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold display-5">Rekap Galeri</h2>
+            <p class="text-muted">Dokumentasi momen menarik dari komunitas dapur kami</p>
+        </div>
+
+        <div class="swiper galeriSwiper">
+            <div class="swiper-wrapper">
+                @foreach ($galeris as $galeri)
+                    <div class="swiper-slide">
+                        <img src="{{ asset('uploads/galeri/' . $galeri->gambar) }}"
+                            alt="Galeri Gambar"
+                            class="img-fluid rounded shadow-sm"
+                            style="height: 250px; object-fit: cover; width: 100%;">
+                    </div>
+                @endforeach
+            </div>
         </div>
     </section>
 
@@ -291,6 +280,7 @@
     @include('include.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         const detailModal = document.getElementById('detailModal');
         detailModal.addEventListener('show.bs.modal', event => {
@@ -299,6 +289,34 @@
             document.getElementById('detailDesc').textContent = button.getAttribute('data-desc');
             document.getElementById('detailImage').src = button.getAttribute('data-image');
             document.getElementById('detailImage').alt = button.getAttribute('data-title');
+        });
+
+        const galeriSwiper = new Swiper('.galeriSwiper', {
+            slidesPerView: 'auto',
+            spaceBetween: 10,
+            loop: true,
+            speed: 5000, // kecepatan animasi
+            autoplay: {
+                delay: 0,
+                disableOnInteraction: false,
+            },
+            freeMode: true,
+            freeModeMomentum: false,
+            grabCursor: true,
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                },
+                576: {
+                    slidesPerView: 2,
+                },
+                768: {
+                    slidesPerView: 3,
+                },
+                992: {
+                    slidesPerView: 4,
+                }
+            }
         });
     </script>
 </body>

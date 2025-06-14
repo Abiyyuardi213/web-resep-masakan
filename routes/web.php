@@ -19,6 +19,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\GaleriController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +27,7 @@ Route::get('/', function () {
 
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);
+Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri.index');
 Route::get('/contact', [ContactController::class, 'index']);
 
 Route::get('/login-user', [AuthController::class, 'showUserLoginForm'])->name('login-user');
@@ -63,6 +65,13 @@ Route::name('admin.')->middleware('admin')->group(function () {
 
     Route::resource('tags', TagsController::class);
     Route::resource('sponsor', SponsorController::class);
+
+    // Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri.index');
+    // Route::get('/galeri/create', [GaleriController::class, 'create'])->name('galeri.create');
+    // Route::post('/galeri', [GaleriController::class, 'store'])->name('galeri.store');
+    // Route::get('/galeri/show', [GaleriController::class, 'show'])->name('galeri.show');
+    // Route::delete('/galeri/{id}', [GaleriController::class, 'destroy'])->name('galeri.destroy');
+    Route::resource('galeri', GaleriController::class);
 });
 
 Route::name('users')->middleware('users')->group(function () {
