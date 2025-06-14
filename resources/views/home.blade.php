@@ -64,34 +64,34 @@
         }
 
         .carousel-wrapper {
-        height: 400px;
-        overflow: hidden;
-    }
+            height: 400px;
+            overflow: hidden;
+        }
 
-    .carousel-inner,
-    .carousel-item {
-        height: 100%;
-    }
+        .carousel-inner,
+        .carousel-item {
+            height: 100%;
+        }
 
-    .carousel-item > img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
+        .carousel-item > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
 
-    .carousel-item {
-        height: 100%;
-    }
+        .carousel-item {
+            height: 100%;
+        }
 
 
-    .carousel-caption h1 {
-        font-size: 2rem;
-    }
+        .carousel-caption h1 {
+            font-size: 2rem;
+        }
 
-    .carousel-caption p {
-        font-size: 1rem;
-    }
+        .carousel-caption p {
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
