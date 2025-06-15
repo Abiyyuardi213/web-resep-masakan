@@ -9,14 +9,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
-        body {
+        html, body {
+            height: 100%;
+            margin: 0;
             font-family: 'Nunito', sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         .navbar-brand {
             font-family: 'Pacifico', cursive;
             font-size: 1.8rem;
         }
-
         .floating-navbar {
             position: fixed;
             top: 20px;
@@ -30,65 +40,72 @@
             width: auto;
             max-width: 90%;
         }
+        footer {
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
 
-{{-- Navbar --}}
-@include('include.navbar')
+<div class="wrapper">
 
-{{-- Konten Utama --}}
-<section class="container pt-5 mt-5 pb-5">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold display-5">Hubungi Kami</h2>
-        <p class="text-muted">Kami senang mendengar dari Anda! Silakan hubungi kami melalui form berikut atau informasi kontak yang tersedia.</p>
-    </div>
+    {{-- Navbar --}}
+    @include('include.navbar')
 
-    <div class="row g-4">
-        {{-- Form Kontak --}}
-        <div class="col-md-7">
-            <div class="p-4 rounded-4 shadow-sm bg-light">
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
-                        <input type="text" class="form-control" id="name" placeholder="Masukkan nama Anda" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label fw-semibold">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Masukkan email Anda" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label fw-semibold">Pesan</label>
-                        <textarea class="form-control" id="message" rows="5" placeholder="Tulis pesan Anda..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-warning fw-semibold w-100">Kirim Pesan</button>
-                </form>
-            </div>
+    {{-- Konten Utama --}}
+    <section class="container pt-5 mt-5 pb-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold display-5">Hubungi Kami</h2>
+            <p class="text-muted">Kami senang mendengar dari Anda! Silakan hubungi kami melalui form berikut atau informasi kontak yang tersedia.</p>
         </div>
 
-        {{-- Info Kontak --}}
-        <div class="col-md-5">
-            <div class="p-4 rounded-4 shadow-sm bg-warning-subtle h-100">
-                <h4 class="fw-bold text-warning">Informasi Kontak</h4>
-                <p class="text-muted">Jika Anda memiliki pertanyaan atau saran, silakan hubungi kami melalui informasi berikut:</p>
-                <ul class="list-unstyled text-muted">
-                    <li><i class="bi bi-envelope-fill me-2"></i> support@dapurindonesia.id</li>
-                    <li><i class="bi bi-telephone-fill me-2"></i> +62 812-3456-7890</li>
-                    <li><i class="bi bi-geo-alt-fill me-2"></i> Surabaya, Indonesia</li>
-                </ul>
-                <p class="text-muted mt-4">Ikuti kami di media sosial:</p>
-                <div class="d-flex gap-3">
-                    <a href="#" class="text-danger fs-4"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-primary fs-4"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-info fs-4"><i class="bi bi-twitter"></i></a>
+        <div class="row g-4">
+            {{-- Form Kontak --}}
+            <div class="col-md-7">
+                <div class="p-4 rounded-4 shadow-sm bg-light">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
+                            <input type="text" class="form-control" id="name" placeholder="Masukkan nama Anda" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-semibold">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Masukkan email Anda" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label fw-semibold">Pesan</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="Tulis pesan Anda..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning fw-semibold w-100">Kirim Pesan</button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- Info Kontak --}}
+            <div class="col-md-5">
+                <div class="p-4 rounded-4 shadow-sm bg-warning-subtle h-100">
+                    <h4 class="fw-bold text-warning">Informasi Kontak</h4>
+                    <p class="text-muted">Jika Anda memiliki pertanyaan atau saran, silakan hubungi kami melalui informasi berikut:</p>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="bi bi-envelope-fill me-2"></i> support@dapurindonesia.id</li>
+                        <li><i class="bi bi-telephone-fill me-2"></i> +62 812-3456-7890</li>
+                        <li><i class="bi bi-geo-alt-fill me-2"></i> Surabaya, Indonesia</li>
+                    </ul>
+                    <p class="text-muted mt-4">Ikuti kami di media sosial:</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-danger fs-4"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-primary fs-4"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-info fs-4"><i class="bi bi-twitter"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-{{-- Footer --}}
-@include('include.footer')
+    {{-- Footer --}}
+    @include('include.footer')
+
+</div> <!-- wrapper end -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

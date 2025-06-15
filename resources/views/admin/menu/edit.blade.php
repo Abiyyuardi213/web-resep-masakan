@@ -67,14 +67,21 @@
                                         <textarea name="deskripsi_menu" rows="3" class="form-control @error('deskripsi_menu') is-invalid @enderror" required>{{ old('deskripsi_menu', $menu->deskripsi_menu) }}</textarea>
                                         @error('deskripsi_menu')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="prosedur">Prosedur</label>
+                                        <textarea name="prosedur" rows="5" class="form-control @error('prosedur') is-invalid @enderror" required>{{ old('prosedur', $menu->prosedur) }}</textarea>
+                                        @error('prosedur')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
                                 </div>
 
                                 <!-- Kanan -->
                                 <div class="col-md-6 text-center">
                                     <div class="form-group">
-                                        <label for="prosedur">Prosedur</label>
-                                        <textarea name="prosedur" rows="5" class="form-control @error('prosedur') is-invalid @enderror" required>{{ old('prosedur', $menu->prosedur) }}</textarea>
-                                        @error('prosedur')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        <label for="video_url">Link Video YouTube (opsional)</label>
+                                        <input type="url" name="video_url" id="video_url" class="form-control @error('video_url') is-invalid @enderror"
+                                            placeholder="https://www.youtube.com/watch?v=..." value="{{ old('video_url', $menu->video_url) }}">
+                                        @error('video_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
                                     <div class="form-group">

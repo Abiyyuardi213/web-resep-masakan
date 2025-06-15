@@ -10,7 +10,7 @@ class GaleriController extends Controller
 {
     public function index()
     {
-        $galeris = Galeri::all();
+        $galeris = Galeri::orderBy('created_at', 'desc')->get();
         return view('admin.galeri.index', compact('galeris'));
     }
 
@@ -90,5 +90,11 @@ class GaleriController extends Controller
     {
         $galeris = Galeri::latest()->get();
         return view('galeri-list', compact('galeris'));
+    }
+
+    public function show($id)
+    {
+        $galeri = Galeri::findOrFail($id);
+        return view('admin.galeri.show', compact('galeri'));
     }
 }

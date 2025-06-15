@@ -29,9 +29,11 @@ class MenuController extends Controller
             'deskripsi_menu' => 'required|string',
             'prosedur' => 'required|string',
             'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'video_url' => 'nullable|string',
         ]);
 
         $data = $request->only(['nama_menu', 'deskripsi_menu', 'prosedur', 'kategori_id']);
+        $data['video_url'] = $request->video_url;
 
         if ($request->hasFile('gambar_menu')) {
             $file = $request->file('gambar_menu');
@@ -65,12 +67,14 @@ class MenuController extends Controller
             'deskripsi_menu' => 'required|string',
             'prosedur' => 'required|string',
             'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'video_url' => 'nullable|string',
         ]);
 
         $menu->nama_menu = $request->nama_menu;
         $menu->kategori_id = $request->kategori_id;
         $menu->deskripsi_menu = $request->deskripsi_menu;
         $menu->prosedur = $request->prosedur;
+        $menu->video_url = $request->video_url;
 
         if ($request->hasFile('gambar_menu')) {
             if ($menu->gambar_menu && file_exists(public_path('uploads/menu/' . $menu->gambar_menu))) {

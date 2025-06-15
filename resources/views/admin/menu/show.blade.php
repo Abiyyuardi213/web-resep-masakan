@@ -14,7 +14,7 @@
         }
         .menu-img {
             width: 100%;
-            max-width: 180px;
+            max-width: 250px;
             height: auto;
             object-fit: cover;
             border: 3px solid #dee2e6;
@@ -22,6 +22,10 @@
         }
         .table th {
             background-color: #f8f9fa;
+            width: 30%;
+        }
+        .table td {
+            width: 70%;
         }
         @media (max-width: 768px) {
             .card {
@@ -48,7 +52,7 @@
 
             <section class="content">
                 <div class="container-fluid d-flex justify-content-center">
-                    <div class="card shadow-lg w-100" style="max-width: 800px;">
+                    <div class="card shadow-lg w-100" style="max-width: 1000px;">
                         <div class="card-header bg-warning">
                             <h3 class="card-title mb-0 text-white"><i class="fas fa-utensils"></i> Informasi Menu</h3>
                         </div>
@@ -56,7 +60,7 @@
                             <div class="row justify-content-center">
                                 <div class="col-12 col-md-4 text-center mb-3">
                                     <img src="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default-food.png') }}"
-     class="menu-img img-fluid rounded" alt="Foto Menu">
+                                         class="menu-img img-fluid rounded" alt="Foto Menu">
                                 </div>
                                 <div class="col-12 col-md-8">
                                     <div class="table-responsive">
@@ -81,13 +85,18 @@
                                                 <th>Kategori</th>
                                                 <td>{{ $menu->kategori->nama_kategori ?? '-' }}</td>
                                             </tr>
-                                            {{-- <tr>
-                                                <th>Foto Menu</th>
-                                                <td class="text-center">
-                                                    <img src="{{ $menu->gambar_menu ? asset('public/' . $menu->gambar_menu) : asset('uploads/menu') }}"
-                                                         class="menu-img img-fluid rounded" alt="Foto Menu">
+                                            <tr>
+                                                <th>Video</th>
+                                                <td>
+                                                    @if($menu->video_url)
+                                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#detailModal" onclick="setVideo('{{ $menu->video_url }}')">
+                                                            <i class="fab fa-youtube"></i> Lihat Video
+                                                        </button>
+                                                    @else
+                                                        <span class="text-muted">Tidak ada video</span>
+                                                    @endif
                                                 </td>
-                                            </tr> --}}
+                                            </tr>
                                             <tr>
                                                 <th>Dibuat pada</th>
                                                 <td>{{ $menu->created_at->translatedFormat('d F Y H:i') }}</td>
@@ -96,7 +105,6 @@
                                                 <th>Terakhir diubah</th>
                                                 <td>{{ $menu->updated_at->translatedFormat('d F Y H:i') }}</td>
                                             </tr>
-
                                         </table>
                                     </div>
                                 </div>

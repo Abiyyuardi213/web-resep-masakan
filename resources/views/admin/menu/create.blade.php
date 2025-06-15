@@ -75,11 +75,17 @@
                                     <!-- Kanan: Gambar -->
                                     <div class="col-md-6 text-center">
                                         <div class="form-group">
+                                            <label for="video_url">Link Video YouTube (opsional)</label>
+                                            <input type="url" name="video_url" id="video_url" class="form-control @error('video_url') is-invalid @enderror" placeholder="https://www.youtube.com/watch?v=..." value="{{ old('video_url') }}">
+                                            @error('video_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="gambar_menu">Gambar Menu</label>
                                             <input type="file" name="gambar_menu" id="gambar_menu" class="form-control-file @error('gambar_menu') is-invalid @enderror" accept="image/*">
                                             @error('gambar_menu')<div class="text-danger">{{ $message }}</div>@enderror
                                         </div>
-                                        
+
                                         <div style="width: 300px; height: 300px; border: 2px dashed #ccc; margin: auto; display: flex; align-items: center; justify-content: center;">
                                             <img id="preview" src="https://via.placeholder.com/300x300?text=Preview" class="img-fluid rounded" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                                         </div>

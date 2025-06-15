@@ -151,7 +151,9 @@
                                 data-id="{{ $menu->id }}"
                                 data-title="{{ $menu->nama_menu }}"
                                 data-desc="{{ $menu->deskripsi_menu }}"
-                                data-image="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}">
+                                data-prosedur="{{ $menu->prosedur }}"
+                                data-image="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}"
+                                data-video="{{ $menu->video_url }}">
                             Lihat Detail Resep
                         </button>
                     </div>
@@ -253,31 +255,43 @@
 
     <!-- Modal Detail -->
     <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">Detail Resep</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-warning text-white rounded-top-4 px-4 py-3">
+                    <h5 class="modal-title" id="detailModalLabel">
+                        <i class="fas fa-info-circle me-2"></i> Detail Resep
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup" onclick="stopVideo()"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="row g-4">
+                <div class="modal-body p-4">
+                    <div class="row g-4 align-items-start">
                         <!-- Gambar -->
-                        <div class="col-md-5">
-                            <img id="detailImage" src="" alt="" class="img-fluid rounded shadow-sm w-100 h-100 object-fit-cover" />
+                        <div class="col-lg-5">
+                            <img id="detailImage" src="" alt="Gambar Resep" class="img-fluid rounded-3 shadow w-100 object-fit-cover" style="max-height: 400px;" />
                         </div>
 
                         <!-- Informasi Resep -->
-                        <div class="col-md-7">
-                            <h4 id="detailTitle" class="fw-bold text-dark"></h4>
-                            <p id="detailDesc" class="text-muted"></p>
+                        <div class="col-lg-7">
+                            <h3 id="detailTitle" class="fw-bold text-dark mb-2"></h3>
+                            <p id="detailDesc" class="text-muted mb-3" style="font-size: 1rem;"></p>
                             <hr>
-                            <h5 class="fw-semibold">Prosedur Memasak</h5>
+                            <h5 class="fw-semibold text-dark mb-2">Prosedur Memasak</h5>
                             <p id="detailProsedur" class="text-secondary" style="white-space: pre-line;"></p>
                         </div>
                     </div>
+
+                    <!-- Video Resep -->
+                    <div id="videoSection" class="mt-4 d-none">
+                        <h5 class="fw-semibold text-dark mb-2">Video Tutorial</h5>
+                        <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                            <iframe id="videoFrame" src="" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <div class="modal-footer bg-light rounded-bottom-4 py-3 px-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" onclick="stopVideo()">
+                        <i class="fas fa-times me-1"></i> Tutup
+                    </button>
                 </div>
             </div>
         </div>
@@ -297,7 +311,6 @@
 
         let visibleCount = 8;
 
-        // MODAL DETAIL
         const detailModal = document.getElementById('detailModal');
         detailModal?.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
@@ -305,9 +318,33 @@
             document.getElementById('detailDesc').textContent = button.getAttribute('data-desc');
             document.getElementById('detailImage').src = button.getAttribute('data-image');
             document.getElementById('detailImage').alt = button.getAttribute('data-title');
+            document.getElementById('detailProsedur').textContent = button.getAttribute('data-prosedur');
+
+            const videoUrl = button.getAttribute('data-video');
+            const videoFrame = document.getElementById('videoFrame');
+            const videoSection = document.getElementById('videoSection');
+
+            function extractYoutubeId(url) {
+                const regExp = /^.*(?:youtu.be\/|v\/|embed\/|watch\\?v=)([^#&?]*).*/;
+                const match = url.match(regExp);
+                return (match && match[1].length === 11) ? match[1] : null;
+            }
+
+            const videoId = extractYoutubeId(videoUrl);
+            if (videoUrl && videoId) {
+                videoFrame.src = `https://www.youtube.com/embed/${videoId}`;
+                videoSection.classList.remove('d-none');
+            } else {
+                videoFrame.src = '';
+                videoSection.classList.add('d-none');
+            }
         });
 
-        // SWIPER GALERI LOOP
+        detailModal?.addEventListener('hidden.bs.modal', function () {
+            const videoFrame = document.getElementById('videoFrame');
+            videoFrame.src = '';
+        });
+
         const galeriSwiper = new Swiper('.galeriSwiper', {
             slidesPerView: 'auto',
             spaceBetween: 10,
@@ -328,7 +365,6 @@
             }
         });
 
-        // LOAD MORE MENU
         loadMoreBtn?.addEventListener('click', function () {
             const nextMenus = allMenus.slice(visibleCount, visibleCount + 4);
 
@@ -350,6 +386,8 @@
                                     data-id="${menu.id}"
                                     data-title="${menu.nama_menu}"
                                     data-desc="${menu.deskripsi_menu}"
+                                    data-prosedur="${menu.prosedur ?? ''}"
+                                    data-video="${menu.video_url ?? ''}"
                                     data-image="${menu.gambar_menu ? '/uploads/menu/' + menu.gambar_menu : '/image/default.jpg'}">
                                 Lihat Detail Resep
                             </button>
@@ -368,7 +406,6 @@
             toggleMenuBtn?.classList.remove('d-none');
         });
 
-        // LIHAT LEBIH SEDIKIT
         toggleMenuBtn?.addEventListener('click', function () {
             document.querySelectorAll('.extra-menu').forEach(el => el.remove());
             visibleCount = 8;

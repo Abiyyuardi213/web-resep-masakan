@@ -52,6 +52,8 @@ class MembershipController extends Controller
 
     public function callback(Request $request)
     {
+        Log::info('Midtrans Callback Masuk', ['data' => $request->all()]);
+
         // Validasi Signature
         $serverKey = config('midtrans.server_key');
         $expectedSignature = hash('sha512',
