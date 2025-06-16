@@ -90,13 +90,8 @@ Route::middleware(['auth', 'check.membership'])->group(function () {
     Route::get('/member/dashboard', [MemberController::class, 'index'])->name('member.dashboard');
 });
 
-Route::post('/midtrans/callback', [MembershipController::class, 'callback']);
+Route::post('/midtrans/callback', [MembershipController::class, 'handleNotification']);
 Route::post('/midtrans/notification', [MembershipController::class, 'handleNotification']);
-    // ->withoutMiddleware([
-    //     VerifyCsrfToken::class,
-    //     SubstituteBindings::class
-    // ])
-    // ->name('membership.callback');
 
 Route::middleware('auth')->group(function () {
     Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');

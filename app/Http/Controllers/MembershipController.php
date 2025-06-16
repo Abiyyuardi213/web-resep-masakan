@@ -71,26 +71,27 @@ class MembershipController extends Controller
         $transactionId = $notif->transaction_id;
         $grossAmount = $notif->gross_amount;
 
-        $userId = $this->getUserIdFromOrderId($orderId);
+        $transaction = Transaction::where('order_id', $orderId)->first();
 
-        $transaction = Transaction::updateOrCreate(
-            ['order_id' => $orderId],
-            [
-                'user_id' => $userId,
-                'payment_type' => $paymentType,
-                'transaction_status' => $status,
-                'transaction_id' => $transactionId,
-                'gross_amount' => $grossAmount,
-                'payload' => json_encode($notif),
-            ]
-        );
+        if (!$transaction) {
+            Log::warning("❌ Transaksi dengan order_id {$orderId} tidak ditemukan.");
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        $transaction->update([
+            'payment_type' => $paymentType,
+            'transaction_status' => $status,
+            'transaction_id' => $transactionId,
+            'gross_amount' => $grossAmount,
+            'payload' => json_encode($notif),
+        ]);
 
         if (in_array($status, ['settlement', 'capture'])) {
-            $user = User::find($userId);
-            if ($user && !$user->is_premium) {
-                $user->is_premium = true;
+            $user = $transaction->user;
+            if ($user && !$user->is_member) {
+                $user->is_member = 1;
                 $user->save();
-                Log::info("✅ User {$user->name} berhasil di-upgrade ke Premium");
+                Log::info("✅ User {$user->name} berhasil di-upgrade ke MEMBER");
             }
         }
 
