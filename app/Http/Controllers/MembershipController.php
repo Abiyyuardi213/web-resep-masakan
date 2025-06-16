@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Midtrans\Config;
 use Midtrans\Snap;
 use Midtrans\Notification;
@@ -28,17 +29,25 @@ class MembershipController extends Controller
 
     public function process()
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
-        $orderId = 'ORDER-' . Str::uuid();
+        $grossAmount = 50000;
 
-        $user->order_id = $orderId;
-        $user->save();
+        $orderId = 'PREM-' . uniqid();
+
+        Transaction::create([
+            'user_id' => $user->id,
+            'order_id' => $orderId,
+            'payment_type' => 'pending',
+            'transaction_status' => 'pending',
+            'gross_amount' => $grossAmount,
+            'transaction_id' => null,
+            'payload' => null,
+        ]);
 
         $params = [
             'transaction_details' => [
                 'order_id' => $orderId,
-                'gross_amount' => 50000,
+                'gross_amount' => $grossAmount,
             ],
             'customer_details' => [
                 'first_name' => $user->name,
@@ -50,48 +59,48 @@ class MembershipController extends Controller
         return view('membership.payment', compact('snapToken'));
     }
 
-    public function callback(Request $request)
+    public function handleNotification(Request $request)
     {
-        Log::info('Midtrans Callback Masuk', ['data' => $request->all()]);
-
-        // Validasi Signature
-        $serverKey = config('midtrans.server_key');
-        $expectedSignature = hash('sha512',
-            $request->order_id .
-            $request->status_code .
-            $request->gross_amount .
-            $serverKey
-        );
-
-        if ($request->signature_key !== $expectedSignature) {
-            Log::warning('Signature tidak cocok!', [
-                'dikirim' => $request->signature_key,
-                'diharapkan' => $expectedSignature,
-            ]);
-            return response()->json(['message' => 'Signature tidak valid'], 403);
-        }
+        Log::info('📩 Midtrans Callback Masuk', ['payload' => $request->all()]);
 
         $notif = new Notification();
-        $transaction = $notif->transaction_status;
+
         $orderId = $notif->order_id;
+        $status = $notif->transaction_status;
+        $paymentType = $notif->payment_type;
+        $transactionId = $notif->transaction_id;
+        $grossAmount = $notif->gross_amount;
 
-        Log::info("Notifikasi Midtrans diterima", [
-            'order_id' => $orderId,
-            'status' => $transaction,
-        ]);
+        $userId = $this->getUserIdFromOrderId($orderId);
 
-        if (in_array($transaction, ['capture', 'settlement'])) {
-            $user = User::where('order_id', $orderId)->first();
+        $transaction = Transaction::updateOrCreate(
+            ['order_id' => $orderId],
+            [
+                'user_id' => $userId,
+                'payment_type' => $paymentType,
+                'transaction_status' => $status,
+                'transaction_id' => $transactionId,
+                'gross_amount' => $grossAmount,
+                'payload' => json_encode($notif),
+            ]
+        );
 
-            if ($user && $user->is_member == 0) {
-                $user->is_member = 1;
-                $user->order_id = null;
+        if (in_array($status, ['settlement', 'capture'])) {
+            $user = User::find($userId);
+            if ($user && !$user->is_premium) {
+                $user->is_premium = true;
                 $user->save();
-
-                Log::info("Membership user {$user->name} berhasil diaktifkan.");
+                Log::info("✅ User {$user->name} berhasil di-upgrade ke Premium");
             }
         }
 
-        return response()->json(['message' => 'Callback diproses'], 200);
+        return response()->json(['message' => 'Notification handled']);
+    }
+
+    private function getUserIdFromOrderId($orderId)
+    {
+        // Format: PREMIUM-<user_id>-<timestamp>
+        $parts = explode('-', $orderId);
+        return $parts[1] ?? null;
     }
 }

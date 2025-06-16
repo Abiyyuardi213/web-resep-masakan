@@ -91,6 +91,7 @@ Route::middleware(['auth', 'check.membership'])->group(function () {
 });
 
 Route::post('/midtrans/callback', [MembershipController::class, 'callback']);
+Route::post('/midtrans/notification', [MembershipController::class, 'handleNotification']);
     // ->withoutMiddleware([
     //     VerifyCsrfToken::class,
     //     SubstituteBindings::class
