@@ -28,11 +28,12 @@ class MenuController extends Controller
             'kategori_id' => 'required|exists:kategori,id',
             'deskripsi_menu' => 'required|string',
             'prosedur' => 'required|string',
+            'is_premium' => 'required|boolean',
             'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'video_url' => 'nullable|string',
         ]);
 
-        $data = $request->only(['nama_menu', 'deskripsi_menu', 'prosedur', 'kategori_id']);
+        $data = $request->only(['nama_menu', 'deskripsi_menu', 'prosedur', 'kategori_id', 'is_premium']);
         $data['video_url'] = $request->video_url;
 
         if ($request->hasFile('gambar_menu')) {
@@ -66,6 +67,7 @@ class MenuController extends Controller
             'kategori_id' => 'required|exists:kategori,id',
             'deskripsi_menu' => 'required|string',
             'prosedur' => 'required|string',
+            'is_premium' => 'required|boolean',
             'gambar_menu' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'video_url' => 'nullable|string',
         ]);
@@ -74,6 +76,7 @@ class MenuController extends Controller
         $menu->kategori_id = $request->kategori_id;
         $menu->deskripsi_menu = $request->deskripsi_menu;
         $menu->prosedur = $request->prosedur;
+        $menu->is_premium = $request->is_premium;
         $menu->video_url = $request->video_url;
 
         if ($request->hasFile('gambar_menu')) {

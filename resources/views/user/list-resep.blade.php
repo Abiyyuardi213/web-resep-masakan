@@ -76,12 +76,33 @@
         }
 
         .carousel-wrapper {
-            height: 60vh;
-            max-height: 600px;
+            height: 400px;
+            overflow: hidden;
         }
+
+        .carousel-inner,
+        .carousel-item {
+            height: 100%;
+        }
+
         .carousel-item > img {
+            width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
+        }
+
+        .carousel-item {
+            height: 100%;
+        }
+
+
+        .carousel-caption h1 {
+            font-size: 2rem;
+        }
+
+        .carousel-caption p {
+            font-size: 1rem;
         }
         .bi-heart-fill.liked {
             color: red;
@@ -97,44 +118,68 @@
 
     @include('include.navbarUser')
 
-    <!-- Hero Carousel -->
-    <section class="carousel-wrapper">
-        <div id="carouselExample" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
-            <div class="carousel-inner h-100">
-                @foreach ([
-                    ['image' => 'slide1.jpg', 'title' => 'Selamat Datang di Dapur Indonesia', 'desc' => 'Temukan berbagai resep nusantara yang menggoda selera'],
-                    ['image' => 'slide2.jpg', 'title' => 'Resep Masakan Nusantara', 'desc' => 'Setiap masakan membawa cerita dan kenangan'],
-                    ['image' => 'slide3.jpg', 'title' => 'Inspirasi Dapur Anda', 'desc' => 'Resep inovatif untuk semua kesempatan'],
-                ] as $index => $slide)
-                    <div class="carousel-item h-100 position-relative {{ $index === 0 ? 'active' : '' }}">
-                        <img src="{{ asset('image/' . $slide['image']) }}" class="d-block w-100 h-100 object-fit-cover" alt="Slide">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h1>{{ $slide['title'] }}</h1>
-                            <p>{{ $slide['desc'] }}</p>
-                        </div>
+    <!-- Hero Section dengan Grid Layout -->
+    <section class="container pt-5 mt-5 pb-5">
+        <div class="row g-4">
+            <div class="carousel-wrapper mb-3">
+                <div id="carouselExample" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+                    <div class="carousel-inner h-100 rounded-4 overflow-hidden shadow">
+                        @foreach ([
+                            ['image' => 'slide1.jpg', 'title' => 'Selamat Datang di Dapur Indonesia', 'desc' => 'Temukan berbagai resep nusantara yang menggoda selera'],
+                            ['image' => 'slide2.jpg', 'title' => 'Resep Masakan Nusantara', 'desc' => 'Setiap masakan membawa cerita dan kenangan'],
+                            ['image' => 'slide3.jpg', 'title' => 'Inspirasi Dapur Anda', 'desc' => 'Resep inovatif untuk semua kesempatan'],
+                        ] as $index => $slide)
+                            <div class="carousel-item position-relative {{ $index === 0 ? 'active' : '' }}">
+                                <img src="{{ asset('image/' . $slide['image']) }}"
+                                    class="d-block w-100 h-100"
+                                    alt="Slide {{ $index + 1 }}">
+                                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 px-3 py-2">
+                                    <h1 class="fw-bold">{{ $slide['title'] }}</h1>
+                                    <p>{{ $slide['desc'] }}</p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
         </div>
     </section>
 
     <div class="container mb-5">
-        <h2 class="text-center fw-bold mb-4">🍽 Menu Masakan Favorit</h2>
+        <h2 class="text-center fw-bold mb-4">Menu Masakan Favorit</h2>
 
         <div class="row g-4">
             @foreach ($menus ?? [] as $menu)
             <div class="col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100">
-                    <img src="{{ asset('uploads/menu/' . $menu['image']) }}" class="card-img-top" alt="{{ $menu['title'] }}" style="height: 220px; object-fit: cover;">
+                <div class="card shadow-sm h-100 position-relative">
+
+                    {{-- Badge Premium/Gratis --}}
+                    <span class="badge position-absolute top-0 start-0 m-2
+                                {{ $menu['is_premium'] ? 'bg-warning' : 'bg-success' }}">
+                        {{ $menu['is_premium'] ? 'Premium' : 'Gratis' }}
+                    </span>
+
+                    <img src="{{ asset('uploads/menu/' . $menu['image']) }}"
+                        class="card-img-top"
+                        alt="{{ $menu['title'] }}"
+                        style="height: 220px; object-fit: cover;">
+
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ $menu['title'] }}</h5>
-                        <p class="card-text">{{ $menu['desc'] }}</p>
+                        <h5 class="card-title fw-bold">{{ $menu['title'] }}</h5>
+
+                        @if (!empty($menu['video_url']))
+                            <p>
+                                <a href="{{ $menu['video_url'] }}" target="_blank" rel="noopener" class="text-danger text-decoration-none">
+                                    <i class="bi bi-youtube"></i> Lihat di YouTube
+                                </a>
+                            </p>
+                        @endif
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
@@ -153,10 +198,9 @@
                         <button class="btn btn-warning w-100 mt-auto" data-bs-toggle="modal" data-bs-target="#detailModal"
                             data-id="{{ $menu['id'] }}"
                             data-title="{{ $menu['title'] }}"
-                            data-desc="{{ $menu['desc'] }}"
                             data-image="{{ asset('uploads/menu/' . $menu['image']) }}"
-                            data-detail-url="{{ route('usersmenu.detail', $menu['id']) }}"
-                            data-comments='@json($menu['comments'])'> <!-- 👈 Ini ditambah -->
+                            data-detail-url="{{ route('menu.detail', $menu['id']) }}"
+                            data-comments='@json($menu['comments'])'>
                             Lihat Komentar Pengguna
                         </button>
 
@@ -222,6 +266,7 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
+                    <a id="btn-detail-resep" href="#" class="btn btn-primary" target="_blank">Lihat detail resep</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
@@ -240,7 +285,9 @@
             const button = event.relatedTarget;
             const menuId = button.getAttribute('data-id');
             const comments = JSON.parse(button.getAttribute('data-comments'));
+            const detailUrl = button.getAttribute('data-detail-url');
 
+            document.getElementById('btn-detail-resep').setAttribute('href', detailUrl);
             document.getElementById('detailTitle').textContent = button.getAttribute('data-title');
             document.getElementById('detailDesc').textContent = button.getAttribute('data-desc');
             document.getElementById('detailImage').src = button.getAttribute('data-image');

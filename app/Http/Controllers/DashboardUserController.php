@@ -25,8 +25,10 @@ class DashboardUserController extends Controller
                 'title' => $menu->nama_menu,
                 'desc' => $menu->deskripsi_menu,
                 'image' => $menu->gambar_menu,
-                'likes_count' => $menu->likes->count(), // ✅ untuk <span class="like-count">
-                'is_liked' => in_array($menu->id, $likedMenuIds), // ✅ untuk ikon bintang
+                'is_premium' => $menu->is_premium,
+                'video_url' => $menu->video_url, // <-- Tambahan di sini
+                'likes_count' => $menu->likes->count(),
+                'is_liked' => in_array($menu->id, $likedMenuIds),
                 'comments' => $menu->comments->map(function ($comment) {
                     return [
                         'user' => $comment->user->name ?? 'Anonim',
@@ -36,7 +38,7 @@ class DashboardUserController extends Controller
             ];
         });
 
-        return view('user.dashboard-user', ['menus' => $data]);
+        return view('user.list-resep', ['menus' => $data]);
     }
 
     public function homepage()

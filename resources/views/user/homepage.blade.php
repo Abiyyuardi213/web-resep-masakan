@@ -137,43 +137,55 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- Informasi Singkat -->
-                <div class="bg-light rounded-4 shadow-sm p-4">
-                    <h4 class="fw-bold text-danger">Tentang Website Ini</h4>
-                    <p class="mb-0 text-muted">
-                        Dapur Indonesia adalah platform resep masakan nusantara yang menyajikan berbagai hidangan tradisional hingga modern.
-                        Temukan inspirasi masakan harian Anda dan bagikan resep favorit bersama komunitas pecinta kuliner!
-                    </p>
-                </div>
             </div>
 
-            <!-- Kolom Kanan: Membership Info -->
             <div class="col-lg-4">
-                <div class="bg-warning-subtle rounded-4 shadow-sm p-4 h-100">
-                    <!-- Status Membership Saat Ini -->
-                    <div class="text-center mb-3">
-                        @if(Auth::check() && Auth::user()->is_premium)
+                @if(Auth::check() && Auth::user()->is_member)
+                    <!-- Card Premium Member -->
+                    <div class="bg-light rounded-4 shadow-sm p-4 h-100 text-center border border-warning">
+                        <div class="mb-3">
                             <div class="badge bg-warning text-dark px-4 py-2 fs-5 rounded-pill shadow-sm d-inline-flex align-items-center gap-2">
                                 <i class="bi bi-star-fill fs-5"></i> <strong>Premium Member</strong>
                             </div>
-                        @else
+                        </div>
+
+                        <h4 class="fw-bold text-warning">🎉 Terima Kasih Telah Menjadi Member Premium!</h4>
+                        <p class="text-muted">Nikmati akses penuh ke seluruh fitur dan resep spesial dari Dapur Indonesia.</p>
+
+                        <ul class="list-unstyled text-muted text-start mt-3">
+                            <li>🌟 Akses eksklusif ke resep premium</li>
+                            <li>💾 Simpan dan kelola resep favorit</li>
+                            <li>👩‍🍳 Bagikan resep kreasi pribadi</li>
+                            <li>🏆 Ikut serta dalam lomba masak</li>
+                            <li>🛠 Bebas iklan & pengalaman lebih cepat</li>
+                        </ul>
+
+                        <div class="mt-4">
+                            <a href="{{ url('/dashboard-user') }}" class="btn btn-outline-warning w-100 fw-semibold">
+                                Jelajahi Resep Premium
+                            </a>
+                        </div>
+                    </div>
+                @else
+                    <!-- Card Ajakan Upgrade -->
+                    <div class="bg-warning-subtle rounded-4 shadow-sm p-4 h-100">
+                        <div class="text-center mb-3">
                             <div class="badge bg-secondary text-white px-4 py-2 fs-5 rounded-pill shadow-sm d-inline-flex align-items-center gap-2">
                                 <i class="bi bi-person-fill fs-5"></i> <strong>Free Member</strong>
                             </div>
-                        @endif
-                    </div>
+                        </div>
 
-                    <h4 class="fw-bold text-warning text-center">👥 Membership</h4>
-                    <p class="text-muted text-center">Bergabunglah menjadi anggota Dapur Indonesia dan nikmati:</p>
-                    <ul class="list-unstyled text-muted">
-                        <li>✔ Akses penuh ke ribuan resep</li>
-                        <li>✔ Simpan resep favorit Anda</li>
-                        <li>✔ Bagikan resep kreasi sendiri</li>
-                        <li>✔ Ikuti event dan kompetisi masak</li>
-                    </ul>
-                    <a href="{{ url('/upgrade') }}" class="btn btn-warning w-100 fw-semibold mt-3">Daftar Sekarang</a>
-                </div>
+                        <h4 class="fw-bold text-warning text-center">👥 Membership</h4>
+                        <p class="text-muted text-center">Bergabunglah menjadi anggota Dapur Indonesia dan nikmati:</p>
+                        <ul class="list-unstyled text-muted">
+                            <li>✔ Akses penuh ke ribuan resep</li>
+                            <li>✔ Simpan resep favorit Anda</li>
+                            <li>✔ Bagikan resep kreasi sendiri</li>
+                            <li>✔ Ikuti event dan kompetisi masak</li>
+                        </ul>
+                        <a href="{{ url('/upgrade') }}" class="btn btn-warning w-100 fw-semibold mt-3">Daftar Sekarang</a>
+                    </div>
+                @endif
             </div>
         </div>
     </section>

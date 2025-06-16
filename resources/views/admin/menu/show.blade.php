@@ -86,6 +86,16 @@
                                                 <td>{{ $menu->kategori->nama_kategori ?? '-' }}</td>
                                             </tr>
                                             <tr>
+                                                <th>Jenis Akses Menu</th>
+                                                <td>
+                                                    @if ($menu->is_premium)
+                                                        <span class="badge badge-danger"><i class="fas fa-crown"></i> Premium</span>
+                                                    @else
+                                                        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Gratis</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
                                                 <th>Video</th>
                                                 <td>
                                                     @if($menu->video_url)

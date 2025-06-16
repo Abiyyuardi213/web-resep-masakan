@@ -20,6 +20,7 @@ class Menu extends Model
         'gambar_menu',
         'video_url',
         'kategori_id',
+        'is_premium',
     ];
 
     protected static function booted()
@@ -45,6 +46,7 @@ class Menu extends Model
             'gambar_menu'    => $data['gambar_menu'] ?? null,
             'video_url'      => $data['video_url'] ?? null,
             'kategori_id'    => $data['kategori_id'],
+            'is_premium'     => $data['is_premium'] ?? true,
         ]);
     }
 
@@ -57,6 +59,7 @@ class Menu extends Model
             'gambar_menu'    => $data['gambar_menu'] ?? $this->gambar_menu,
             'video_url'      => $data['video_url'] ?? $this->video_url,
             'kategori_id'    => $data['kategori_id'] ?? $this->kategori_id,
+            'is_premium'     => $data['is_premium'] ?? $this->is_premium,
         ]);
     }
 

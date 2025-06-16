@@ -73,6 +73,18 @@
                                         <textarea name="prosedur" rows="5" class="form-control @error('prosedur') is-invalid @enderror" required>{{ old('prosedur', $menu->prosedur) }}</textarea>
                                         @error('prosedur')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="is_premium">Jenis Akses Menu</label>
+                                        <select class="form-control @error('is_premium') is-invalid @enderror"
+                                                name="is_premium">
+                                            <option value="1" {{ old('is_premium', $menu->is_premium) == 1 ? 'selected' : '' }}>Premium</option>
+                                            <option value="0" {{ old('is_premium', $menu->is_premium) == 0 ? 'selected' : '' }}>Free</option>
+                                        </select>
+                                        @error('is_premium')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
 
                                 <!-- Kanan -->

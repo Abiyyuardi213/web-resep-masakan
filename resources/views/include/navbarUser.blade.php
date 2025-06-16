@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <ul class="navbar-nav align-items-lg-center gap-2">
                 <li class="nav-item"><a class="nav-link" href="{{ url('/homepage') }}">Beranda</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url('/dashboard-user') }}">Menu</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url('/list-resep') }}">Menu</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url('/kategori-list') }}">Kategori</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Resep</a></li>
 

@@ -75,14 +75,16 @@ Route::name('admin.')->middleware('admin')->group(function () {
 
 Route::name('users')->middleware('users')->group(function () {
     Route::get('/homepage', [DashboardUserController::class, 'homepage'])->name('users.homepage.user');
-    Route::get('/dashboard-user', [DashboardUserController::class, 'index'])->name('users.dashboard.user');
+    Route::get('/list-resep', [DashboardUserController::class, 'index'])->name('users.dashboard.user');
     Route::get('/menu/{id}', [MenuController::class, 'show'])->name('menu.show');
-    Route::get('/menu/{id}/detail', [MenuController::class, 'detail'])->name('menu.detail');
+    //Route::get('/menu/{id}/detail', [MenuController::class, 'detail'])->name('menu.detail');
     Route::get('/kategori-list', [DashboardUserController::class, 'kategoriList'])->name('user.kategori-list');
     Route::get('/kategori/{id}', [DashboardUserController::class, 'menuByKategori'])->name('user.menu-by-kategori');
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
     Route::post('/profil', [ProfilController::class, 'update'])->name('profil.update');
 });
+
+Route::get('/menu/{id}/detail', [MenuController::class, 'detail'])->name('menu.detail');
 
 Route::middleware(['auth', 'check.membership'])->group(function () {
     Route::get('/member/dashboard', [MemberController::class, 'index'])->name('member.dashboard');

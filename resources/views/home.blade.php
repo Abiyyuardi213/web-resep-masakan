@@ -138,6 +138,10 @@
             @foreach ($menus->take(8) as $menu)
             <div class="col-sm-6 col-md-4 col-lg-3 menu-item">
                 <div class="card h-100 border-0 shadow-sm hover-shadow">
+                    <span class="badge position-absolute top-0 start-0 m-2
+                                {{ $menu->is_premium ? 'bg-warning' : 'bg-success' }}">
+                        {{ $menu->is_premium ? 'Premium' : 'Gratis' }}
+                    </span>
                     <img src="{{ $menu->gambar_menu ? asset('uploads/menu/' . $menu->gambar_menu) : asset('image/default.jpg') }}"
                         class="card-img-top rounded-top"
                         alt="{{ $menu->nama_menu }}"
