@@ -3,12 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dapur Indonesia - Menu</title>
+    <title>Dapur Indonesia - Paket Membership</title>
     <link rel="icon" type="image/png" href="{{ asset('image/icondapur.jpg') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .toggle-status {
+            width: 50px;
+            height: 24px;
+            appearance: none;
+            background: #ddd;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-status:checked {
+            background: linear-gradient(90deg, #28a745, #2ecc71);
+        }
+
+        .toggle-status::before {
+            content: "❌";
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            text-align: center;
+            font-size: 12px;
+            line-height: 18px;
+        }
+
+        .toggle-status:checked::before {
+            content: "✔️";
+            transform: translateX(26px);
+            color: #28a745;
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -20,7 +57,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Manajemen Menu</h1>
+                            <h1 class="m-0">Manajemen Paket Membership</h1>
                         </div>
                     </div>
                 </div>
@@ -30,59 +67,44 @@
                 <div class="container-fluid">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h3 class="card-title">Daftar Menu</h3>
-                            <a href="{{ route('menu.create') }}" class="btn btn-primary btn-sm ml-auto">
-                                <i class="fas fa-plus"></i> Tambah Menu
+                            <h3 class="card-title">Daftar Paket Terdaftar</h3>
+                            <a href="{{ route('admin.paket-membership.create') }}" class="btn btn-primary btn-sm ml-auto">
+                                <i class="fas fa-plus"></i> Tambah Paket
                             </a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="menuTable" class="table table-bordered table-striped">
+                                <table id="paketTable" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Menu</th>
-                                            <th>Kategori</th>
-                                            <th>Deskripsi</th>
-                                            <th>Jenis Resep</th>
-                                            {{-- <th>Prosedur</th> --}}
-                                            {{-- <th>Gambar</th> --}}
+                                            <th>Nama Paket</th>
+                                            <th>Durasi Paket</th>
+                                            <th>Harga Paket</th>
+                                            <th>Status Peran</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($menus as $index => $menu)
+                                        @foreach($pakets as $index => $paket)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ $menu->nama_menu }}</td>
-                                                <td>{{ $menu->kategori->nama_kategori ?? '-' }}</td>
-                                                <td>{{ Str::limit($menu->deskripsi_menu, 50) }}</td>
-                                                <td>
-                                                    @if ($menu->is_premium)
-                                                        <span class="badge bg-warning text-dark">Premium</span>
-                                                    @else
-                                                        <span class="badge bg-success">Gratis</span>
-                                                    @endif
-                                                </td>
-                                                {{-- <td>{{ Str::limit($menu->prosedur, 50) }}</td> --}}
-                                                {{-- <td>
-                                                    @if($menu->gambar_menu)
-                                                        <img src="{{ asset('storage/' . $menu->gambar_menu) }}" alt="gambar" width="80">
-                                                    @else
-                                                        <span class="text-muted">-</span>
-                                                    @endif
-                                                </td> --}}
+                                                <td>{{ $paket->nama_paket }}</td>
+                                                <td>{{ $paket->durasi_bulan }}</td>
+                                                <td>{{ $paket->harga }}</td>
                                                 <td class="text-center">
-                                                    <a href="{{ route('menu.show', $menu->id) }}" class="btn btn-info btn-sm">
-                                                        <i class="fas fa-eye"></i> Detail
-                                                    </a>
-                                                    <a href="{{ route('menu.edit', $menu->id) }}" class="btn btn-warning btn-sm">
+                                                    <input type="checkbox" class="toggle-status"
+                                                        data-paket-id="{{ $paket->id }}"
+                                                        {{ $paket->status ? 'checked' : '' }}>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('admin.paket-membership.edit', $paket->id) }}" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Edit
                                                     </a>
-                                                    <button class="btn btn-danger btn-sm delete-menu-btn"
+                                                    <button class="btn btn-danger btn-sm delete-paket-btn"
                                                         data-toggle="modal"
-                                                        data-target="#deleteMenuModal"
-                                                        data-menu-id="{{ $menu->id }}">
+                                                        data-target="#deletePaketModal"
+                                                        data-paket-id="{{ $paket->id }}">
                                                         <i class="fas fa-trash"></i> Hapus
                                                     </button>
                                                 </td>
@@ -102,17 +124,17 @@
     </div>
 
     <!-- Modal Konfirmasi Hapus -->
-    <div class="modal fade" id="deleteMenuModal" tabindex="-1" aria-labelledby="deleteMenuModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deletePaketModal" tabindex="-1" aria-labelledby="deletePaketModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteMenuModalLabel"><i class="fas fa-exclamation-triangle"></i> Konfirmasi Hapus</h5>
+                    <h5 class="modal-title" id="deletePaketModalLabel"><i class="fas fa-exclamation-triangle"></i> Konfirmasi Hapus</h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    Apakah Anda yakin ingin menghapus menu ini? Tindakan ini tidak dapat dibatalkan.
+                    Apakah Anda yakin ingin menghapus paket ini? Tindakan ini tidak dapat dibatalkan.
                 </div>
                 <form id="deleteForm" method="POST">
                     @csrf
@@ -137,7 +159,7 @@
     <script src="{{ asset('js/ToastScript.js') }}"></script>
     <script>
         $(document).ready(function () {
-            $("#menuTable").DataTable({
+            $("#paketTable").DataTable({
                 "paging": true,
                 "lengthChange": false,
                 "searching": true,
@@ -146,13 +168,38 @@
                 "autoWidth": false,
                 "responsive": true
             });
+        });
 
-            $('.delete-menu-btn').click(function () {
-                let menuId = $(this).data('menu-id');
-                let deleteUrl = "{{ url('menu') }}/" + menuId;
+        $(document).ready(function () {
+            $('.delete-paket-btn').click(function () {
+                let paketId = $(this).data('paket-id');
+                let deleteUrl = "{{ url('paket-membership') }}/" + paketId;
                 $('#deleteForm').attr('action', deleteUrl);
             });
+        });
 
+        $(document).ready(function () {
+            $(".toggle-status").change(function () {
+                let paketId = $(this).data("paket-id");
+                let status = $(this).prop("checked") ? 1 : 0;
+
+                $.post("{{ url('paket-membership') }}/" + paketId + "/toggle-status", {
+                    _token: '{{ csrf_token() }}',
+                    status: status
+                }, function (res) {
+                    if (res.success) {
+                        $(".toast-body").text(res.message);
+                        $("#toastNotification").toast({ autohide: true, delay: 3000 }).toast("show");
+                    } else {
+                        alert("Gagal memperbarui status.");
+                    }
+                }).fail(function () {
+                    alert("Terjadi kesalahan dalam mengubah status.");
+                });
+            });
+        });
+
+        $(document).ready(function() {
             @if (session('success') || session('error'))
                 $('#toastNotification').toast({
                     delay: 3000,

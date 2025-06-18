@@ -38,4 +38,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function paket()
+    {
+        return $this->belongsTo(PaketMembership::class, 'paket_id');
+    }
 }

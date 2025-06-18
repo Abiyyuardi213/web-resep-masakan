@@ -13,7 +13,17 @@ class DashboardUserController extends Controller
 {
     public function index()
     {
-        $menus = Menu::with(['comments.user', 'likes'])->get();
+        // $menus = Menu::with(['comments.user', 'likes'])->get();
+
+        $user = Auth::user();
+
+        if ($user && $user->is_member) {
+            $menus = Menu::with(['comments.user', 'likes'])->get();
+        } else {
+            $menus = Menu::where('is_premium', false)
+                        ->with(['comments.user', 'likes'])
+                        ->get();
+        }
 
         $likedMenuIds = Auth::check()
             ? Likes::where('user_id', Auth::id())->pluck('menu_id')->toArray()

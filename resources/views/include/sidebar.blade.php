@@ -93,6 +93,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('admin.paket-membership.index') }}" class="nav-link {{ request()->is('galeri') ? 'active-custom' : '' }}">
+                        <i class="nav-icon fas fa-crown"></i>
+                        <p>Paket Membership</p>
+                    </a>
+                </li>
+
                 <!-- Pengaturan -->
                 <li class="nav-item">
                     <a href="{{ url('pengaturan') }}" class="nav-link {{ request()->is('pengaturan') ? 'active-custom' : '' }}">

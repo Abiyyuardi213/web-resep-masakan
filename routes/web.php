@@ -20,7 +20,7 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\GaleriController;
-
+use App\Http\Controllers\PaketMembershipController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
@@ -71,6 +71,8 @@ Route::name('admin.')->middleware('admin')->group(function () {
     Route::resource('sponsor', SponsorController::class);
 
     Route::resource('galeri', GaleriController::class);
+
+    Route::resource('paket-membership', PaketMembershipController::class);
 });
 
 Route::name('users')->middleware('users')->group(function () {
