@@ -11,7 +11,7 @@ class PaketMembership extends Model
     protected $keyType = 'string';
     protected $table = 'paket_membership';
 
-    protected $fillable = ['id', 'nama_paket', 'durasi_bulan', 'harga'];
+    protected $fillable = ['id', 'nama_paket', 'durasi_bulan', 'harga','paket_status'];
 
     protected static function boot()
     {
@@ -27,6 +27,7 @@ class PaketMembership extends Model
             'nama_paket' => $data['nama_paket'],
             'durasi_bulan' => $data['durasi_bulan'],
             'harga' => $data['harga'],
+            'paket_status' => $data['paket_status'] ?? true,
         ]);
     }
 
@@ -36,6 +37,7 @@ class PaketMembership extends Model
             'nama_paket' => $data['nama_paket'],
             'durasi_bulan' => $data['durasi_bulan'] ?? $this->durasi_bulan,
             'harga' => $data['harga'] ?? $this->harga,
+            'paket_status' => $data['paket_status'] ?? $this->paket_status,
         ]);
     }
 
@@ -46,7 +48,7 @@ class PaketMembership extends Model
 
     public function toggleStatus()
     {
-        $this->status = !$this->status;
+        $this->paket_status = !$this->paket_status;
         $this->save();
     }
 

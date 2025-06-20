@@ -94,9 +94,16 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('admin.paket-membership.index') }}" class="nav-link {{ request()->is('galeri') ? 'active-custom' : '' }}">
+                    <a href="{{ route('admin.paket-membership.index') }}" class="nav-link {{ request()->is('paket-membership') ? 'active-custom' : '' }}">
                         <i class="nav-icon fas fa-crown"></i>
                         <p>Paket Membership</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.transaction.index') }}" class="nav-link {{ request()->is('transaction') ? 'active-custom' : '' }}">
+                        <i class="nav-icon fas fa-credit-card"></i>
+                        <p>Transaksi Membership</p>
                     </a>
                 </li>
 

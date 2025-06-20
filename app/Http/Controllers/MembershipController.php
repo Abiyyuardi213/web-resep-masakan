@@ -2,41 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Midtrans\Config;
 use Midtrans\Snap;
 use Midtrans\Notification;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use App\Models\Transaction;
 use App\Models\User;
+use App\Models\PaketMembership;
+use Illuminate\Support\Facades\Config as LaravelConfig;
+use App\Services\CreateSnapTokenService;
 
 class MembershipController extends Controller
 {
     public function __construct()
     {
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized = config('midtrans.is_sanitized');
-        Config::$is3ds = config('midtrans.is_3ds');
+        Config::$serverKey = LaravelConfig::get('services.midtrans.server_key');
+        Config::$clientKey = LaravelConfig::get('services.midtrans.client_key');
+        Config::$isProduction = LaravelConfig::get('services.midtrans.is_production');
+        Config::$isSanitized = LaravelConfig::get('services.midtrans.is_sanitized');
+        Config::$is3ds = LaravelConfig::get('services.midtrans.is_3ds');
     }
 
     public function index()
     {
-        return view('membership.upgrade');
+        $pakets = PaketMembership::where('paket_status', 1)->get();
+        return view('membership.upgrade', compact('pakets'));
     }
 
-    public function process()
+    public function process(Request $request)
     {
         $user = Auth::user();
-        $grossAmount = 50000;
+        $paket = PaketMembership::findOrFail($request->paket_id);
+        $usernameSlug = strtolower(preg_replace('/\s+/', '', $user->name));
+        $orderId = 'PREM-' . strtoupper($usernameSlug) . '-' . strtoupper(uniqid());
+        $grossAmount = $paket->harga;
 
-        $orderId = 'PREM-' . uniqid();
-
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => $user->id,
             'order_id' => $orderId,
+            'paket_id' => $paket->id,
             'payment_type' => 'pending',
             'transaction_status' => 'pending',
             'gross_amount' => $grossAmount,
@@ -44,32 +50,32 @@ class MembershipController extends Controller
             'payload' => null,
         ]);
 
-        $params = [
-            'transaction_details' => [
-                'order_id' => $orderId,
-                'gross_amount' => $grossAmount,
-            ],
-            'customer_details' => [
-                'first_name' => $user->name,
-                'email' => $user->email,
-            ],
-        ];
+        // Gunakan service
+        $snapToken = (new CreateSnapTokenService($transaction))->getSnapToken();
 
-        $snapToken = Snap::getSnapToken($params);
         return view('membership.payment', compact('snapToken'));
     }
 
     public function handleNotification(Request $request)
     {
-        Log::info('📩 Midtrans Callback Masuk', ['payload' => $request->all()]);
+        // Gunakan raw body karena Midtrans kirim JSON
+        $json = json_decode($request->getContent());
 
-        $notif = new Notification();
+        Log::info('📩 Midtrans Callback Masuk', ['payload' => $json]);
 
-        $orderId = $notif->order_id;
-        $status = $notif->transaction_status;
-        $paymentType = $notif->payment_type;
-        $transactionId = $notif->transaction_id;
-        $grossAmount = $notif->gross_amount;
+        if (!$json) {
+            return response()->json(['message' => 'Invalid JSON'], 400);
+        }
+
+        $orderId = $json->order_id ?? null;
+        $status = $json->transaction_status ?? null;
+        $paymentType = $json->payment_type ?? null;
+        $transactionId = $json->transaction_id ?? null;
+        $grossAmount = $json->gross_amount ?? null;
+
+        if (!$orderId) {
+            return response()->json(['message' => 'Missing order ID'], 400);
+        }
 
         $transaction = Transaction::where('order_id', $orderId)->first();
 
@@ -83,7 +89,7 @@ class MembershipController extends Controller
             'transaction_status' => $status,
             'transaction_id' => $transactionId,
             'gross_amount' => $grossAmount,
-            'payload' => json_encode($notif),
+            'payload' => json_encode($json),
         ]);
 
         if (in_array($status, ['settlement', 'capture'])) {
@@ -91,6 +97,7 @@ class MembershipController extends Controller
             if ($user && !$user->is_member) {
                 $user->is_member = 1;
                 $user->save();
+
                 Log::info("✅ User {$user->name} berhasil di-upgrade ke MEMBER");
             }
         }
@@ -98,10 +105,14 @@ class MembershipController extends Controller
         return response()->json(['message' => 'Notification handled']);
     }
 
-    private function getUserIdFromOrderId($orderId)
+    public function checkout(Request $request)
     {
-        // Format: PREMIUM-<user_id>-<timestamp>
-        $parts = explode('-', $orderId);
-        return $parts[1] ?? null;
+        $paket = PaketMembership::findOrFail($request->paket_id);
+        $user = Auth::user();
+
+        $usernameSlug = strtolower(preg_replace('/\s+/', '', $user->name));
+        $orderId = 'PREM-' . strtoupper($usernameSlug) . '-' . strtoupper(uniqid());
+
+        return view('membership.checkout', compact('paket', 'user', 'orderId'));
     }
 }

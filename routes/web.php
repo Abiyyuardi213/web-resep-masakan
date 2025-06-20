@@ -20,9 +20,12 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\GaleriController;
+use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaketMembershipController;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use App\Http\Controllers\TransactionController;
+//use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use App\Http\Middleware\VerifyCsrfToken;
 
 Route::get('/', function () {
     return view('welcome');
@@ -72,7 +75,10 @@ Route::name('admin.')->middleware('admin')->group(function () {
 
     Route::resource('galeri', GaleriController::class);
 
+    Route::post('paket-membership/{id}/toggle-status', [PaketMembershipController::class, 'toggleStatus'])->name('paket-membership.toggleStatus');
     Route::resource('paket-membership', PaketMembershipController::class);
+
+    Route::resource('transaction', TransactionController::class)->only(['index', 'show']);
 });
 
 Route::name('users')->middleware('users')->group(function () {
@@ -92,20 +98,22 @@ Route::middleware(['auth', 'check.membership'])->group(function () {
     Route::get('/member/dashboard', [MemberController::class, 'index'])->name('member.dashboard');
 });
 
-Route::post('/midtrans/callback', [MembershipController::class, 'handleNotification']);
-Route::post('/midtrans/notification', [MembershipController::class, 'handleNotification']);
+//Route::post('/midtrans/notification', [MembershipController::class, 'handleNotification']);
+Route::post('/midtrans/notification', [MembershipController::class, 'handleNotification'])
+    ->withoutMiddleware([VerifyCsrfToken::class]);
 
 Route::middleware('auth')->group(function () {
     Route::post('/menu/{id}/like', [LikesController::class, 'toggle'])->name('menu.like');
     Route::post('/menu/comment', [CommentsController::class, 'store'])->name('menu.comment');
     Route::get('/upgrade', [MembershipController::class, 'index'])->name('membership.index');
     Route::post('/upgrade/process', [MembershipController::class, 'process'])->name('membership.process');
-    //Route::post('/midtrans/callback', [MembershipController::class, 'callback'])->name('membership.callback');
-    Route::post('/upgrade/process', [MembershipController::class, 'process'])->name('membership.process');
+    Route::post('/membership/checkout', [MembershipController::class, 'checkout'])->name('membership.checkout');
 });
 
 Route::get('/test-translate', function () {
     return view('test-translate');
 });
 
-require base_path('routes/api.php');
+Route::get('/payment/{id}', [TransactionController::class, 'payment'])->middleware('auth');
+
+// require base_path('routes/api.php');

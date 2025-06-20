@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Paket</title>
+    <title>Ubah Paket</title>
     <link rel="icon" type="image/png" href="{{ asset('image/icondapur.jpg') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -19,7 +19,7 @@
             <div class="container-fluid">
                 <div class="row mb-2 align-items-center">
                     <div class="col-sm-6">
-                        <h1 class="m-0"><i class="fas fa-user-shield"></i> Tambah Paket Baru</h1>
+                        <h1 class="m-0"><i class="fas fa-edit"></i> Ubah Paket</h1>
                     </div>
                 </div>
             </div>
@@ -28,22 +28,23 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Form Tambah Paket Membership</h3>
+                    <div class="card-header bg-warning text-dark">
+                        <h3 class="card-title"><i class="fas fa-pencil-alt"></i> Form Ubah Paket Membership</h3>
                     </div>
                     <div class="card-body">
                         @if(session('error'))
                             <div class="alert alert-danger">{{ session('error') }}</div>
                         @endif
 
-                        <form action="{{ route('admin.paket-membership.store') }}" method="POST">
+                        <form action="{{ route('admin.paket-membership.update', $paket->id) }}" method="POST">
                             @csrf
+                            @method('PUT')
 
                             <div class="form-group">
                                 <label for="nama_paket">Nama Paket</label>
                                 <input type="text" name="nama_paket"
                                     class="form-control @error('nama_paket') is-invalid @enderror"
-                                    value="{{ old('nama_paket') }}" required
+                                    value="{{ old('nama_paket', $paket->nama_paket) }}" required
                                     placeholder="Contoh: Member Silver">
                                 @error('nama_paket')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -54,7 +55,7 @@
                                 <label for="durasi_bulan">Durasi (bulan)</label>
                                 <input type="number" name="durasi_bulan"
                                     class="form-control @error('durasi_bulan') is-invalid @enderror"
-                                    value="{{ old('durasi_bulan') }}" required min="1"
+                                    value="{{ old('durasi_bulan', $paket->durasi_bulan) }}" required min="1"
                                     placeholder="Contoh: 3">
                                 @error('durasi_bulan')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -65,7 +66,7 @@
                                 <label for="harga">Harga (Rp)</label>
                                 <input type="number" name="harga"
                                     class="form-control @error('harga') is-invalid @enderror"
-                                    value="{{ old('harga') }}" required min="0"
+                                    value="{{ old('harga', $paket->harga) }}" required min="0"
                                     placeholder="Contoh: 50000">
                                 @error('harga')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -76,8 +77,8 @@
                                 <label for="paket_status">Status</label>
                                 <select class="form-control @error('paket_status') is-invalid @enderror"
                                         name="paket_status">
-                                    <option value="1" {{ old('paket_status') == '1' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="0" {{ old('paket_status') == '0' ? 'selected' : '' }}>Nonaktif</option>
+                                    <option value="1" {{ old('paket_status', $paket->paket_status) == '1' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ old('paket_status', $paket->paket_status) == '0' ? 'selected' : '' }}>Nonaktif</option>
                                 </select>
                                 @error('paket_status')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -86,7 +87,7 @@
 
                             <div class="mt-4">
                                 <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save"></i> Simpan
+                                    <i class="fas fa-save"></i> Simpan Perubahan
                                 </button>
                                 <a href="{{ route('admin.paket-membership.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> Batal

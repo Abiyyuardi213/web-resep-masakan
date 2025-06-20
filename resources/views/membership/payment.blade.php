@@ -40,6 +40,8 @@
             color: #f1c40f;
         }
     </style>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-7iSkuwS7VweFzIvo"></script>
+
 </head>
 <body>
 
@@ -61,7 +63,6 @@
 
     @include('include.footer')
 
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             snap.pay('{{ $snapToken }}', {

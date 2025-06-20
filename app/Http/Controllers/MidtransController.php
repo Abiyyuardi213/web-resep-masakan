@@ -11,7 +11,7 @@ class MidtransController extends Controller
     {
         Log::info('Midtrans Callback Diterima:', $request->all());
 
-        $serverKey = config('midtrans.server_key');
+        $serverKey = 'SB-Mid-server-KdwIUo1X21W-XYb-W_bqBcuu';
         $expectedSignature = hash('sha512',
             $request->order_id .
             $request->status_code .

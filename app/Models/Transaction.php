@@ -12,17 +12,23 @@ class Transaction extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'id',
         'user_id',
+        'paket_id',
         'order_id',
         'payment_type',
         'transaction_status',
         'gross_amount',
         'transaction_id',
         'payload',
+        'notes',
+        'snap_token',
     ];
 
     protected $casts = [
         'payload' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     protected static function booted()

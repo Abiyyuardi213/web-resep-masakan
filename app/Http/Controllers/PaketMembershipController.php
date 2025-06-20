@@ -24,6 +24,7 @@ class PaketMembershipController extends Controller
             'nama_paket' => 'required|string|max:255',
             'durasi_bulan' => 'required|integer',
             'harga' => 'required|numeric|min:0',
+            'paket_status' => 'required|boolean',
         ]);
 
         PaketMembership::createPaket($request->all());
@@ -43,6 +44,7 @@ class PaketMembershipController extends Controller
             'nama_paket' => 'required|string|max:255',
             'durasi_bulan' => 'required|integer',
             'harga' => 'required|numeric|min:0',
+            'paket_status' => 'required|boolean',
         ]);
 
         $paket = PaketMembership::findOrFail($id);

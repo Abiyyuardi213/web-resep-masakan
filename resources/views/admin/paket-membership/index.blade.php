@@ -90,12 +90,12 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $paket->nama_paket }}</td>
-                                                <td>{{ $paket->durasi_bulan }}</td>
+                                                <td>{{ $paket->durasi_bulan }} Bulan </td>
                                                 <td>{{ $paket->harga }}</td>
                                                 <td class="text-center">
                                                     <input type="checkbox" class="toggle-status"
                                                         data-paket-id="{{ $paket->id }}"
-                                                        {{ $paket->status ? 'checked' : '' }}>
+                                                        {{ $paket->paket_status ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <a href="{{ route('admin.paket-membership.edit', $paket->id) }}" class="btn btn-info btn-sm">
@@ -185,7 +185,7 @@
 
                 $.post("{{ url('paket-membership') }}/" + paketId + "/toggle-status", {
                     _token: '{{ csrf_token() }}',
-                    status: status
+                    paket_status: status
                 }, function (res) {
                     if (res.success) {
                         $(".toast-body").text(res.message);
