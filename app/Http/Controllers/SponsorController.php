@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Sponsor;
 
 class SponsorController extends Controller
@@ -36,12 +37,17 @@ class SponsorController extends Controller
         }
 
         $sponsor = new Sponsor($data);
-        $sponsor->id = (string) \Illuminate\Support\Str::uuid();
+        $sponsor->id = (string) Str::uuid();
         $sponsor->save();
 
         return redirect()->route('admin.sponsor.index')->with('success', 'Sponsor berhasil ditambahkan!');
     }
 
+    public function show($id)
+    {
+        $sponsor = Sponsor::findOrFail($id);
+        return view('admin.sponsor.show', compact('sponsor'));
+    }
 
     public function edit($id)
     {
@@ -64,7 +70,7 @@ class SponsorController extends Controller
 
         if ($request->hasFile('logo_sponsor')) {
             if ($sponsor->logo_sponsor && file_exists(public_path('uploads/sponsor/' . $sponsor->logo_sponsor))) {
-                unlink(public_path('uploads/sponsor/' . $sponsor->gambar_menu));
+                unlink(public_path('uploads/sponsor/' . $sponsor->logo_sponsor));
             }
 
             $file = $request->file('logo_sponsor');
@@ -75,13 +81,19 @@ class SponsorController extends Controller
 
         $sponsor->save();
 
-        return redirect()->route('sponsor.index')->with('success', 'Sponsor berhasil diperbarui.');
+        return redirect()->route('admin.sponsor.index')->with('success', 'Sponsor berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         $sponsor = Sponsor::findOrFail($id);
-        $sponsor->deleteSponsor();
+
+        // Hapus logo jika ada
+        if ($sponsor->logo_sponsor && file_exists(public_path('uploads/sponsor/' . $sponsor->logo_sponsor))) {
+            unlink(public_path('uploads/sponsor/' . $sponsor->logo_sponsor));
+        }
+
+        $sponsor->delete();
 
         return redirect()->route('admin.sponsor.index')->with('success', 'Sponsor berhasil dihapus.');
     }
