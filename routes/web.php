@@ -27,9 +27,7 @@ use App\Http\Controllers\TransactionController;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Http\Middleware\VerifyCsrfToken;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);

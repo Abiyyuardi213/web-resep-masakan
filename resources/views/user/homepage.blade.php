@@ -161,7 +161,7 @@
                         </ul>
 
                         <div class="mt-4">
-                            <a href="{{ url('/dashboard-user') }}" class="btn btn-outline-warning w-100 fw-semibold">
+                            <a href="{{ url('/list-resep') }}" class="btn btn-outline-warning w-100 fw-semibold">
                                 Jelajahi Resep Premium
                             </a>
                         </div>
