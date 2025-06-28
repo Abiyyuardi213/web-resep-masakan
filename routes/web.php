@@ -23,7 +23,6 @@ use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaketMembershipController;
 use App\Http\Controllers\TransactionController;
-//use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Http\Middleware\VerifyCsrfToken;
 
